@@ -205,14 +205,11 @@ Trang chỉ có lời giới thiệu và link playlist YouTube (`PLoyGOS2WIonajh
 | ? | Video về Garçon | Bài Garçon (§7) |
 | — | Video về vài neuron MLP hiếm khi diễn giải được | Phần cập nhật 2023 của Framework |
 
-Lời dặn của tác giả: đây là "talk về kết quả sớm ở họp nhóm", có thể có lỗi; hai video đầu đã được paper Framework thay thế.
+Video Garçon có tham số playlist trong URL nhưng không rõ vị trí; video neuron MLP không có tham số playlist nên không chắc thuộc playlist. Hai video đầu đã được paper Framework thay thế.
 
 ## 9. Các tài liệu này kiểm chứng điều gì
 
-Không có thí nghiệm hay số liệu mới. Giá trị kiểm chứng gián tiếp:
-
-- **Exercises = "chứng minh bằng xây dựng":** viết được trọng số tay cho induction head (hai cách) cho thấy cơ chế trong paper Framework *khả thi* với đúng số chiều nêu ra; và cho thấy có ít nhất hai thuật toán (Q-composition qua vị trí, K-composition qua nội dung).
-- **Garçon:** bằng chứng duy nhất là báo cáo sử dụng nội bộ (dùng cho gần như mọi công việc interp). Bài Induction Heads sau đó ghi nhận việc thu dữ liệu (hơn 50.000 ablation) dùng nhiều hạ tầng Garçon.
+Không có thí nghiệm hay số liệu mới. Exercises là **"chứng minh bằng xây dựng"**: viết được trọng số tay cho induction head theo hai cách cho thấy cơ chế của paper Framework khả thi, và có ít nhất hai thuật toán (Q-composition qua vị trí, K-composition qua nội dung). Garçon chỉ có báo cáo sử dụng nội bộ; bài Induction Heads sau đó ghi nhận việc thu dữ liệu (hơn 50.000 ablation) dựa nhiều vào Garçon.
 
 ## 10. Giới hạn
 
@@ -233,15 +230,12 @@ $$
 
 **11.2. "Probe point" cho hybrid GatedDeltaNet.** Nên khai báo điểm probe cho cả *trạng thái recurrent* và *gate*, không chỉ residual/MLP; nếu không, các thí nghiệm kiểu đóng băng pattern (ghi chú 02 §9) không làm được cho lớp linear-attention.
 
-**11.3. Bài tập như unit test cho tool pruning.** Dựng mô hình tay theo BT3 (previous-token + induction), rồi chạy pipeline prune/recover của bạn trên nó. P6 dự đoán: cắt head 1 thì phục hồi per-token thất bại hoàn toàn. Nếu tool báo $D_\text{lin}$ lớn ở đây thì tool có lỗi.
-
-**11.4. Virtual head và độ sâu.** BT1 cho thấy hai head nông có thể "giấu" một chức năng nhỏ (1/8 capacity) trong tích $W^2_\text{net}W^1_\text{net}$. Khi cắt layer, những chức năng ẩn kiểu này biến mất mà không có head nào "trông" quan trọng.
+**11.3. Bài tập như unit test cho tool pruning.** Dựng mô hình tay theo BT3 (previous-token + induction), rồi chạy pipeline prune/recover của bạn trên nó, ghi $D_\text{lin}/D$ khi cắt head 1, head 2, hoặc một chiều của subspace $v$. P6 dự đoán: cắt head 1 thì phục hồi per-token thất bại hoàn toàn. Nếu tool báo $D_\text{lin}$ lớn ở đây thì tool có lỗi.
 
 ## 12. Thí nghiệm gợi ý
 
 1. **Làm BT1 và BT3 bằng code** (NumPy/PyTorch, ~50 dòng): dựng residual 16–32 chiều, chạy trên chuỗi ngẫu nhiên lặp, xác nhận induction attention. Sau đó thêm nhiễu Gaussian vào trọng số và đo khi nào cơ chế gãy — trực giác về độ bền dưới quantization/pruning.
 2. **Mini-Garçon cho LightOnOCR:** một lớp bọc hook có tên probe point thống nhất (vision block, projector, từng decoder layer, trạng thái GatedDeltaNet), hỗ trợ reduction (top-k activation theo neuron, tích luỹ $\Sigma_{xx}$). Đo "time to first plot" trước/sau.
-3. **Unit test 11.3:** chạy pipeline cắt-và-phục-hồi tuyến tính trên mô hình tay của BT3; ghi lại $D_\text{lin}/D$ khi cắt head 1, head 2, và khi cắt 1 chiều trong subspace $v$.
 
 ## 13. Tóm tắt công thức / khái niệm
 
