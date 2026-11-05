@@ -1,7 +1,7 @@
 # Structured Pruning Learns Compact and Accurate Models (2022)
 
 **Tác giả:** Mengzhou Xia, Zexuan Zhong, Danqi Chen (Princeton University).  
-**Venue / arXiv:** arXiv:2204.00408 (v3, 2/5/2022). Paper trong file không ghi tên hội nghị (theo phần acknowledgements là bản ACL 2022, nhưng chúng tôi không đọc điều đó trong văn bản nên chỉ ghi nhận như thông tin ngoài paper). Phương pháp thường được gọi là **CoFi Pruning** (Coarse- and Fine-grained Pruning).  
+**Venue / arXiv:** arXiv:2204.00408 (v3, 2/5/2022). Paper trong file không ghi tên hội nghị. Phương pháp thường được gọi là **CoFi Pruning** (Coarse- and Fine-grained Pruning).  
 **Nguồn:** https://arxiv.org/abs/2204.00408  
 **Chủ đề:** Structured pruning task-specific cho BERT: mask nhiều mức hạt (layer, head, neuron FFN, chiều ẩn) cùng học bằng $L_0$ Hard Concrete + distillation theo layer với ánh xạ layer động.  
 **Vị trí trong lộ trình:** Cần đọc trước: 14 (Voita, cổng $L_0$ Hard Concrete), 16 (Movement pruning, baseline không cấu trúc), 13 (cắt head), 12 (cách đọc thí nghiệm). Bài này là **điểm hội tụ** của nhánh "cắt cấu trúc cho Transformer": mask nhiều tầng + distillation trong lúc cắt. Kế tiếp: 18 (2:4 sparsity, phần cứng), 25 ZipLM, 26 LLM-Pruner, 38 Sheared LLaMA (kế thừa trực tiếp ý mask $L_0$ đa tầng cho LLM).

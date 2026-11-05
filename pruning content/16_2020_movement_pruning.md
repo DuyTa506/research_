@@ -106,7 +106,7 @@ Kết thúc: cố định M, bỏ trọng số mask bằng 0
 
 ## 4. Thí nghiệm và kết quả chính
 
-**Thiết lập.** BERT-base-uncased (khoảng 84M tham số trong encoder và head; embedding bị **đóng băng**); fine-tune lớp transformer và head tác vụ. Mọi con số "độ thưa/remaining weights" tính trên BERT-base và bằng đúng kích thước mô hình, kể cả với baseline. Ba tác vụ: SQuAD v1.1 (hỏi đáp, ~88K ví dụ train theo bảng gốc; text ghi 8K), MNLI (393K), QQP (364K). Mỗi phương pháp cùng số bước cập nhật (6 đến 10 epoch). Baseline: MaP, $L_0$ regularization (Hard Concrete, unstructured), RPP (Guo 2019), LayerDrop (Fan 2020a, chỉ số báo từ tác giả gốc), mini-BERT (Turc 2019).
+**Thiết lập.** BERT-base-uncased (khoảng 84M tham số trong encoder và head; embedding bị **đóng băng**); fine-tune lớp transformer và head tác vụ. Mọi con số "độ thưa/remaining weights" tính trên BERT-base và bằng đúng kích thước mô hình, kể cả với baseline. Ba tác vụ: SQuAD v1.1 (hỏi đáp; paper ghi 8K ví dụ train, có thể là lỗi in vì bài 15 và 17 ghi ~88K), MNLI (393K), QQP (364K). Mỗi phương pháp cùng số bước cập nhật (6 đến 10 epoch). Baseline: MaP, $L_0$ regularization (Hard Concrete, unstructured), RPP (Guo 2019), LayerDrop (Fan 2020a, chỉ số báo từ tác giả gốc), mini-BERT (Turc 2019).
 
 ### 4.1 Kết quả chính (Table 2, không distillation; 10% = 8.5M tham số encoder, 3% = 2.6M)
 
