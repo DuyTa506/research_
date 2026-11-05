@@ -169,7 +169,7 @@ Student 2×500 greedy chạy nhanh hơn teacher beam search 10 lần trên GPU (
 - Chỉ dùng 1 chuỗi (mode) từ teacher nên bỏ phí thông tin xác suất mềm; student học "đúng như teacher dịch" kể cả lỗi của teacher (lỗi của teacher bị khóa cứng vào dữ liệu huấn luyện), trừ khi dùng Seq-Inter.
 - Phải chạy beam search của teacher trên toàn bộ tập train; với teacher 4B và dữ liệu lớn đây là chi phí tính toán đáng kể (chi phí một lần, nhưng không nhỏ).
 - Seq-KD làm student quá "tự tin" (PPL tệ, $p(\hat y)$ cao): xác suất của nó kém hiệu chuẩn, không phù hợp nếu cần xác suất để rerank hoặc ước lượng độ tin cậy (suy luận).
-- Student bị phơi bày ($exposure\ bias$): paper không giải quyết vấn đề train/test mismatch của teacher-forcing; các bài sau (29 GKD, 28 MiniLLM) trực tiếp xử lý bằng dữ liệu on-policy.
+- Exposure bias (lệch giữa lúc train có tiền tố đúng và lúc suy luận tự sinh): paper không giải quyết vấn đề train/test mismatch của teacher-forcing; các bài sau (29 GKD, 28 MiniLLM) trực tiếp xử lý bằng dữ liệu on-policy.
 - Đánh giá bằng BLEU, không có đánh giá của người.
 
 ## 7. Liên hệ với các bài khác
@@ -177,8 +177,8 @@ Student 2×500 greedy chạy nhanh hơn teacher beam search 10 lần trên GPU (
 - **01 Ba & Caruana, 02 Hinton KD:** word-level KD ở đây là Hinton KD áp theo từng vị trí; Seq-KD là biến thể "dữ liệu giả từ teacher" (pseudo-labels).
 - **14 Decoupled KD:** DKD phân tích KL ở mức từng mẫu phân loại; trong chuỗi mỗi vị trí token là một mẫu như vậy.
 - **06 Born-again networks:** student được huấn luyện trên đầu ra của teacher; Seq-KD cùng tinh thần nhưng ở không gian chuỗi.
-- **28 MiniLLM, 29 GKD:** hai bài này nhận xét cả Word-KD lẫn Seq-KD đều có exposure bias/khoảng cách phân phối; đề xuất KL ngược hoặc huấn luyện on-policy (suy luận, nội dung ở bài đó).
-- **32 Speculative KD:** cải thiện cho thấy phân phối mà student học phải giống phân phối student sinh; có liên hệ với việc Seq-KD làm student nhọn hơn.
+- **28 MiniLLM, 29 GKD:** hai bài này (suy luận từ tên bài, kiểm tra ở bài đó) xử lý khoảng cách giữa dữ liệu huấn luyện và dữ liệu student tự sinh, bằng KL ngược hoặc huấn luyện on-policy.
+- **32 Speculative KD:** (suy luận, kiểm tra ở bài đó) liên quan đến việc chọn dữ liệu do student hoặc teacher sinh; Seq-KD làm student nhọn hơn nên là điểm tham chiếu.
 - **36 Distilling step-by-step, 37 Orca, 38 DeepSeek-R1 distillation:** tất cả thực chất là Seq-KD ở quy mô lớn, student SFT trên chuỗi do teacher sinh.
 - **46 Distil-Whisper:** huấn luyện student ASR trên pseudo-label sinh bởi teacher, rất gần với Seq-KD (suy luận từ tên bài; kiểm tra ở bài 46).
 - **03 FitNets:** paper này thử hồi quy hidden state kiểu FitNet và thấy không lợi hơn Word-KD.
@@ -190,7 +190,7 @@ Student 2×500 greedy chạy nhanh hơn teacher beam search 10 lần trên GPU (
 1. **Mode ≈ cả phân phối khi teacher tự tin.** Trong dịch máy, mode chỉ chiếm 1.3-3.8% khối lượng, mà vẫn dùng được. Với OCR, đầu ra gần tất định nên khối lượng xác suất của chuỗi top-1 rất lớn: xấp xỉ "mode thay cho phân phối" ở đây còn *tốt hơn* ở dịch máy (chúng ta suy luận; cần đo $p(\hat y)$ thực tế). Như vậy Seq-KD ≈ huấn luyện student bằng pseudo-label của teacher 4B và mất rất ít thông tin so với KD đầy đủ.
 2. **Greedy là đủ.** Ở dự án batch-1, GPU ≤ 8 GB, chi phí beam search nhân với beam width ($K=5$ là chậm hơn nhiều trên thiết bị cạnh). Kết quả của paper (student Seq-KD greedy ≈ teacher beam-5, nhanh hơn 10 lần) khớp ràng buộc latency. Cần kiểm tra lại cho OCR.
 3. **Pseudo-label thay hoặc bổ sung ground truth.** Nếu đã có nhãn OCR vàng: dùng **Seq-Inter** với $\mathrm{sim}=1-\mathrm{CER}$ (hoặc edit similarity) để chọn, trong $K$-best của teacher, chuỗi gần ground truth nhất; student học chuỗi "đúng" mà vẫn nằm trong vùng teacher gán xác suất cao. Nếu không có nhãn (tài liệu mới): Seq-KD thuần. Cẩn thận: nếu teacher có lỗi hệ thống (bỏ bảng, sai thứ tự đọc) thì student kế thừa nguyên lỗi.
-4. **Seq-KD + Word-KD tốt nhất, kết hợp với pruning.** Phù hợp với kế hoạch "cắt cấu trúc rồi phục hồi bằng distill": sau khi prune ($D_{lin}$ + $D_{res}$), dùng Seq-KD làm loss chính (token-level CE trên chuỗi teacher) và thêm term Word-KD (KL tới phân phối token của teacher, ví dụ DKD ở bài 14) để giữ thông tin phân phối mềm. Phần pruning trong paper là cắt trọng số theo độ lớn rồi retrain; retrain là then chốt (khớp với quan sát của dự án rằng phục hồi sau khi cắt neuron khó hơn cắt layer, vì bài toán ở đó là phục hồi, không phải chọn lựa).
+4. **Seq-KD + Word-KD tốt nhất, kết hợp với pruning.** Phù hợp với kế hoạch "cắt cấu trúc rồi phục hồi bằng distill": sau khi prune ($D_{lin}$ + $D_{res}$), dùng Seq-KD làm loss chính (token-level CE trên chuỗi teacher) và thêm term Word-KD (KL tới phân phối token của teacher, ví dụ DKD ở bài 14) để giữ thông tin phân phối mềm. Phần pruning trong paper là cắt trọng số theo độ lớn rồi retrain; retrain là then chốt (paper nhấn mạnh điểm này; nó cũng gợi ý rằng giai đoạn phục hồi sau khi cắt quan trọng ngang bước chọn phần cắt, nhưng paper không so sánh cắt neuron với cắt layer).
 5. **Lỗi lan truyền / exposure bias** vẫn có trên chuỗi dài. Seq-KD huấn luyện bằng teacher-forcing trên chuỗi do teacher sinh nên student gặp ngữ cảnh gần với ngữ cảnh lúc suy luận hơn so với dùng ground truth khác phong cách; về điểm này khoảng cách còn lại được các bài 28/29 xử lý tiếp.
 6. **Chi phí sinh dữ liệu:** teacher 4B sinh pseudo-label cho toàn bộ tập train; chi phí một lần, nên cân nhắc cache.
 7. **Với vision encoder:** bài này không liên quan trực tiếp (chỉ nói về decoder sinh chuỗi).

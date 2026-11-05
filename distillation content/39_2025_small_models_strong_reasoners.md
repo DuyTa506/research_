@@ -32,7 +32,7 @@
 
 ## 2. Ý tưởng chính
 
-Thí nghiệm có kiểm soát trên 10 student (Qwen2.5 0.5B-32B, Llama 1B-70B) và nhiều cặp teacher: student **nhỏ (<= 3B)** học tốt hơn từ short CoT và từ teacher nhỏ; student **lớn (>= 7B)** hưởng lợi từ long CoT và teacher lớn. Paper gọi đây là **Small Model Learnability Gap**. Gợi ý nguyên nhân: sai khác phân phối giữa student và dữ liệu teacher (student gán perplexity cao cho trace dài/teacher lớn), và tri thức miền hạn chế của model nhỏ. Cách khắc phục đơn giản: **Mix Distillation**, trộn dữ liệu dễ (short/teacher nhỏ) với dữ liệu khó (long/teacher lớn) theo tỷ lệ nhỏ, ví dụ 1:4 (30% là sai, xem 3.4) cho kết quả tốt hơn dùng riêng từng loại.
+Thí nghiệm có kiểm soát trên 10 student (Qwen2.5 0.5B-32B, Llama 1B-70B) và nhiều cặp teacher: student **nhỏ (<= 3B)** học tốt hơn từ short CoT và từ teacher nhỏ; student **lớn (>= 7B)** hưởng lợi từ long CoT và teacher lớn. Paper gọi đây là **Small Model Learnability Gap**. Gợi ý nguyên nhân: sai khác phân phối giữa student và dữ liệu teacher (student gán perplexity cao cho trace dài/teacher lớn), và tri thức miền hạn chế của model nhỏ. Cách khắc phục đơn giản: **Mix Distillation**, trộn dữ liệu dễ (short/teacher nhỏ) với dữ liệu khó (long/teacher lớn) theo tỷ lệ nhỏ, với tỷ lệ 20% dữ liệu khó (1:4, xem 3.4) cho kết quả tốt hơn dùng riêng từng loại.
 
 ## 3. Phương pháp chi tiết
 
