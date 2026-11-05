@@ -157,7 +157,7 @@ Kết luận paper: **K = 2, R = 50% giảm khoảng 45% FLOPs** mà gần như 
 | LLaVA-1.5-13B | 10:17 | 38G | 82,0 | 0,539 s |
 | + FastV (K=0, R=50%) | 6:30 | 30G | 80,5 | 0,341 s |
 
-Tức 13B + FastV (0,341 s) chạy nhanh hơn 7B gốc? Không: 0,341 s so với 0,344 s của 7B, tương đương; điểm 80,5 vẫn cao hơn 76,7. (Lưu ý: bảng này dùng K = 0, tức cắt **ngẫu nhiên** trước LLM.) Giảm tốc độ ≈ 33-37% latency (tự tính: 0,230/0,344 = 0,67; 0,341/0,539 = 0,63).
+Tức 13B + FastV (0,341 s) có độ trễ tương đương 7B gốc (0,344 s) nhưng điểm cao hơn (80,5 so với 76,7), đúng như tuyên bố của tác giả. (Lưu ý: bảng này dùng K = 0, tức cắt **ngẫu nhiên** trước LLM.) Giảm tốc độ ≈ 33-37% latency (tự tính: 0,230/0,344 = 0,67; 0,341/0,539 = 0,63).
 
 **Chi tiết các tác vụ khó:**
 - *MME (LLaVA-1.5-13B):* tổng 1827,75 -> 1849,68 với FastV (K=2, R=50%); OCR 125,0 -> 132,5; Code 47,5 -> 57,5.
