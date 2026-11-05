@@ -112,7 +112,7 @@ Mỗi bước sinh, GPU đọc (i) toàn bộ trọng số và (ii) toàn bộ K
 - MHA: đọc ≈ 1.6 GB + 0.147 GB ≈ 1.75 GB/bước; KV chiếm ≈ 8%.
 - MQA: ≈ 1.6 GB + 0.009 GB; KV chiếm ≈ 0.6%.
 
-Nếu băng thông GPU là $B$ GB/s thì thời gian tối thiểu mỗi bước ≈ bytes/B (cận dưới do băng thông). Ví dụ với $B=300$ GB/s (giả định một GPU ≤ 8 GB tầm trung): 1.75/300 ≈ 5.8 ms vs 1.61/300 ≈ 5.4 ms. **Kết luận của ví dụ:** ở batch 1, ngữ cảnh 1,500 và mô hình nhỏ, KV-cache chỉ là phần nhỏ, **trọng số mới là nguồn băng thông chính**; MQA mang lại cải thiện nhỏ (~7% ở ví dụ này). Lợi ích lớn của MQA xuất hiện khi $b\cdot n$ lớn (batch lớn, ngữ cảnh dài) sao cho KV-cache so được với kích thước trọng số: số hạng $n/d$ trong công thức paper tương ứng với điều này (hai tỉ lệ này khớp: $n/d=1500/1024\approx1.5$ cho MHA nếu coi mọi thứ cùng bậc, nhưng cách tính byte ở đây thực tế hơn vì dùng số tham số thật).
+Nếu băng thông GPU là $B$ GB/s thì thời gian tối thiểu mỗi bước ≈ bytes/B (cận dưới do băng thông). Ví dụ với $B=300$ GB/s (giả định một GPU ≤ 8 GB tầm trung): 1.75/300 ≈ 5.8 ms vs 1.61/300 ≈ 5.4 ms. **Kết luận của ví dụ:** ở batch 1, ngữ cảnh 1,500 và mô hình nhỏ, KV-cache chỉ là phần nhỏ, **trọng số mới là nguồn băng thông chính**; MQA mang lại cải thiện nhỏ (~7% ở ví dụ này). Lợi ích lớn của MQA xuất hiện khi $b\cdot n$ lớn (batch lớn, ngữ cảnh dài) sao cho KV-cache so được với kích thước trọng số: số hạng $n/d$ trong công thức paper tương ứng với điều này.
 
 Ngược lại, ở batch lớn $b$ (phục vụ nhiều người dùng): KV tỉ lệ với $b$ còn trọng số thì không, nên với $b=32$: MHA KV ≈ 4.7 GB (có thể vượt 8 GB cùng với trọng số), MQA ≈ 0.29 GB. Đây là nơi MQA thực sự quyết định.
 

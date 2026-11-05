@@ -86,7 +86,7 @@ $$
 \boxed{s_j=\frac{\max(|X_j|)^{\alpha}}{\max(|W_j|)^{1-\alpha}}}\quad(4)
 $$
 
-Với $\alpha=0.5$ thì sau làm mịn, max của kênh $j$ ở $\hat X$ và ở $\hat W$ bằng nhau: $\max|\hat X_j|=\max|X_j|^{1-\alpha}\max|W_j|^{\alpha}$ và $\max|\hat W_j|=\max|W_j|^{1-\alpha+\ldots}$, cụ thể ở $\alpha=0.5$ cả hai bằng $\sqrt{\max|X_j|\max|W_j|}$ ("chia sẻ cùng độ khó").
+Sau làm mịn: $\max|\hat X_j|=\max|X_j|/s_j=\max|X_j|^{1-\alpha}\max|W_j|^{1-\alpha}$ và $\max|\hat W_j|=s_j\max|W_j|=\max|X_j|^{\alpha}\max|W_j|^{\alpha}$. Với $\alpha=0.5$ cả hai bằng $\sqrt{\max|X_j|\max|W_j|}$, tức activation và trọng số ở cùng kênh có cùng biên độ cực đại và "chia sẻ cùng độ khó" (Hình 5).
 
 **Ví dụ số (tự tính):** kênh outlier: $\max|X_j|=60$, $\max|W_j|=0.5$, $\alpha=0.5$ ⇒ $s_j=\sqrt{60}/\sqrt{0.5}=10.95$; $\hat X_j$ max $=60/10.95=5.48$, $\hat W_j$ max $=0.5\times10.95=5.48$. Kênh thường: $\max|X_j|=0.6$, $\max|W_j|=0.5$ ⇒ $s_j=1.095$, $\hat X_j$ max $=0.548$, $\hat W_j$ max $=0.548$. Tỉ lệ biên độ giữa kênh outlier và kênh thường ở activation giảm từ $100\times$ xuống $10\times$ (căn bậc hai); ở trọng số tăng từ $1\times$ lên $10\times$. Độ khó được **chia đều** ($\sqrt{100}$ mỗi bên).
 
@@ -188,7 +188,7 @@ Tác giả nhận xét LLaMA có ít vấn đề outlier hơn OPT/BLOOM nhưng S
 | OPT-175B, 8 GPU | 1 | 512 | 426 | 359 | 1.19× | 44 | 23 | 1.87× |
 | OPT-175B, 8 GPU | 1 | 1024 | 571 | 475 | 1.20× | 44 | 24 | 1.85× |
 
-(Dòng OPT-30B batch 16, seq 1024: FP16 hết bộ nhớ (OOM), SmoothQuant chạy 3947 ms với 61 GB. Dòng OPT-175B batch 16 cũng có trong Bảng 8 nhưng không trích ở đây.) Con số "ms" ở Bảng 8 là thời gian đo của paper (bản trích không nói rõ đơn vị "mỗi token" hay "mỗi lượt"; cần xem lại paper gốc khi trích dẫn).
+(Dòng OPT-30B batch 16, seq 1024: FP16 hết bộ nhớ (OOM), SmoothQuant chạy 3947 ms với 61 GB. Dòng OPT-175B batch 16 cũng có trong Bảng 8 nhưng không trích ở đây.) Con số "ms" ở Bảng 8 là thời gian đo của paper (paper mô tả đây là độ trễ giải mã mỗi token; các con số tuyệt đối hàng trăm ms trông lớn nên hãy đối chiếu định nghĩa trong paper gốc trước khi trích dẫn).
 
 - **MT-NLG 530B:** FP16 cần 16 GPU (1040 GB), INT8 chỉ 8 GPU (527 GB), độ trễ tương tự (seq 128: 232 ms vs 253 ms), cho phép phục vụ >500B trong một node 8×A100-80GB.
 
@@ -209,7 +209,6 @@ Giả định (cần thay bằng số đo thật): ~0.8B tham số (1.6 GB FP16)
 - Với mô hình khó (GLM-130B) cần $\alpha$ lớn hơn và O3 mất ~1%; kiến trúc/huấn luyện khác nhau có độ khó lượng tử khác nhau ("hy vọng khơi gợi nghiên cứu").
 - Chỉ lượng tử hoá GEMM/BMM; các phép phi tuyến giữ FP16.
 - Static quantization lệch giữa thống kê calibration và dữ liệu thật (BLOOM-176B O3 −0.8%).
-- Phần so sánh GPTQ: GPTQ chỉ lượng tử hoá trọng số (nhắc trong related work / phụ lục A).
 
 **Chúng ta nhận thấy:**
 - Hiệu quả dựa trên giả thuyết "outlier cố định theo kênh". Với kiến trúc có nhiều dạng outlier theo *token* (ví dụ "massive activations" ở token đầu) thì per-tensor static có thể kém; paper chưa phân tích.
