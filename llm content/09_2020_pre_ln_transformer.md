@@ -136,7 +136,7 @@ Với $L=12$ lớp, $d=1$ (chuẩn hoá theo $d$): Post-LN có $\mathbb E\|x\|^2
 
 **(4) So với RAdam:** RAdam giúp huấn luyện Post-LN không cần warm-up, nhưng với Pre-LN gần như không khác Adam: thay đổi vị trí LN "chi phối" thay đổi bộ tối ưu.
 
-**(5) BERT:** Post-LN theo Devlin: warm-up 10k bước, $lr_{max}=1\text{e-}4$ (thử $3\text{e-}4$ thì phân kỳ). Pre-LN: $3\text{e-}4$, giảm tuyến tính, không warm-up. Paper nêu Post-LN đạt validation loss 1.69 ở 500k cập nhật và Pre-LN đạt tương tự ở 700k cập nhật, kèm kết luận "40% speed-up". *Lưu ý:* thứ tự 500k/700k trong văn bản trích xuất có vẻ bị đảo (kết luận 40% nhanh hơn ngụ ý Pre-LN đạt cùng loss sớm hơn), nên hãy kiểm tra lại với bản PDF gốc trước khi trích dẫn con số cụ thể. Pre-LN cũng hội tụ nhanh hơn trên MRPC và RTE.
+**(5) BERT:** Post-LN theo Devlin: warm-up 10k bước, $lr_{max}=1\text{e-}4$ (thử $3\text{e-}4$ thì phân kỳ). Pre-LN: $3\text{e-}4$, giảm tuyến tính, không warm-up. Paper nêu Post-LN đạt validation loss 1.69 ở 500k cập nhật và Pre-LN đạt tương tự ở 700k cập nhật, kèm kết luận "40% speed-up". *Lưu ý:* đã đối chiếu với PDF: chính bản gốc viết đúng như vậy (Post-LN 500k, Pre-LN 700k). Thứ tự này mâu thuẫn với kết luận "40% speed-up", nên nhiều khả năng đây là lỗi đánh máy trong paper: ý đúng là Pre-LN đạt loss đó ở 500k còn Post-LN cần 700k. Khi trích dẫn, hãy nêu rõ chỗ không nhất quán này. Pre-LN cũng hội tụ nhanh hơn trên MRPC và RTE.
 
 ## 5. Phân tích / ablation
 
