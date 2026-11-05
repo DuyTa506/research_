@@ -1,4 +1,4 @@
-# Preface: Toán nền tảng và hướng dẫn đọc về Knowledge Distillation (2025)
+# Preface: Toán nền tảng và hướng dẫn đọc về Knowledge Distillation
 
 **Tác giả:** ghi chú tổng hợp từ kiến thức nền của người biên soạn (không phải ghi chú một paper cụ thể)  
 **Venue / arXiv:** không áp dụng  

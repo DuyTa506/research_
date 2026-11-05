@@ -402,7 +402,7 @@ Báo cáo số token/giờ GPU dùng cho cắt + phục hồi. Hai phương phá
 
 ## 10. Đọc paper pruning một cách phê phán
 
-Lĩnh vực này nổi tiếng khó so sánh. Bài khảo sát thực nghiệm **"What is the State of Neural Network Pruning?" (Blalock et al., 2020; ghi chú 12)** tổng hợp 81 paper (theo trí nhớ của người soạn, hãy đối chiếu với ghi chú 12) và chỉ ra các vấn đề dưới đây. Hãy dùng như danh sách kiểm tra:
+Lĩnh vực này nổi tiếng khó so sánh. Bài khảo sát thực nghiệm **"What is the State of Neural Network Pruning?" (Blalock et al., 2020; ghi chú 12)** tổng hợp 81 paper và chỉ ra các vấn đề dưới đây. Hãy dùng như danh sách kiểm tra:
 
 1. **Baseline có công bằng không?** Mô hình dense gốc có được train tốt không? Có so với một mô hình nhỏ cùng kích thước train đủ (03, 11, 43)? Có so với một baseline đơn giản (magnitude, random) được chỉnh cẩn thận?
 2. **Ngân sách retrain.** Cắt A với 1 epoch và cắt B với 100 epoch thì không so được. Tìm: số bước/epoch/token, learning rate schedule, có dùng distillation hay không.
