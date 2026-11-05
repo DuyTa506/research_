@@ -133,7 +133,7 @@ Chú thích bảng của paper: **huấn luyện mô hình đã cắt từ đầ
 
 ### 4.2 VGG-16 trên CIFAR-10 (Bảng 2)
 
-13 tầng conv + 2 tầng linear. Cấu hình pruned-A: các tầng conv 1 và 2 giảm 64→32 map (FLOP -50% mỗi tầng); conv 8: 512→256 (-50%); conv 9–13: 512→256 (-75% FLOP mỗi tầng); linear đầu: 512 (-50%); conv 3–7 giữ nguyên. Tổng **34% FLOP**, **64% tham số**. Phát hiện chi tiết:
+13 tầng conv + 2 tầng linear. Cấu hình pruned-A: conv 1 giảm 64→32 map và conv 2 giữ 64 map (nhưng nhận đầu vào ít hơn), cả hai giảm 50% FLOP; conv 8: 512→256 (-50%); conv 9–13: 512→256 (-75% FLOP mỗi tầng); linear đầu: 512 (-50%); conv 3–7 giữ nguyên. Tổng **34% FLOP**, **64% tham số**. Phát hiện chi tiết:
 - Mỗi tầng conv có 512 feature map **có thể bỏ ít nhất 60% filter mà không ảnh hưởng accuracy**; với retrain khoảng **90%** (Hình 2b, 2c). Giải thích đề xuất: các filter này hoạt động trên feature map 4×4 hoặc 2×2 nên có thể không có quan hệ không gian có ý nghĩa; (ResNet CIFAR không có conv dưới 8×8).
 - Khác với nhận xét ở các nghiên cứu trước (Zeiler & Fergus; Han), **tầng đầu bền với cắt hơn các tầng kế tiếp** trên CIFAR-10 — tác giả gán cho CIFAR-10 đơn giản, khác ImageNet (Hình 5). Cắt 80% filter của tầng 1 còn 12 filter vẫn nhiều hơn số kênh đầu vào; nhưng cắt 80% filter của tầng 2 là ánh xạ 64→12, làm mất thông tin và hại accuracy.
 
