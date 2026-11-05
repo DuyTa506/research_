@@ -202,7 +202,7 @@ Cùng tiêu chí và chiến lược cắt theo tầng của [Li et al.]:
 **Do tác giả nêu:**
 - Ngưỡng toàn cục có thể xóa trọn một tầng (MNIST); với mạng không có skip connection (VGG), multi-pass phải thêm ràng buộc tối đa 50% kênh mỗi tầng mỗi vòng.
 - ResNet-164 và CIFAR-100 tiết kiệm kém hơn (giả thuyết: bottleneck; nhiều lớp hơn).
-- Cắt quá mạnh thì không phục hồi được (CIFAR-100 từ vòng 3, Hình 5).
+- Cắt quá mạnh thì không phục hồi được (CIFAR-100 multi-pass: lỗi tăng từ vòng 3, Bảng 4; DenseNet-40: trên ngưỡng 80%, Hình 5).
 - Trên ImageNet, tiết kiệm FLOPs thấp (30.4%) vì kênh bị cắt chủ yếu ở FC chứ không ở conv.
 - Fine-tune ImageNet chỉ 5 epoch do giới hạn thời gian.
 
