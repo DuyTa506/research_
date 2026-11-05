@@ -78,8 +78,8 @@ $$
 |---|---|---|
 | Vị trí | MLP activation, mô hình 1 layer | **Residual stream ở layer giữa** |
 | Pre-encoder bias | Có ($\mathbf x-\mathbf b_d$) | Không có trong công thức |
-| Decoder | Ràng buộc cột chuẩn 1 | **Bỏ ràng buộc**, nhân L1 với $\|\mathbf W^{dec}_{\cdot,i}\|$ |
-| Chuẩn hóa input | Không nêu | Scalar normalization về $\mathbb E\|\mathbf x\|^2=D$ |
+| Decoder | Ràng buộc cột chuẩn 1 | **Bỏ ràng buộc**, nhân L1 với $\Vert \mathbf W^{dec}_{\cdot,i}\Vert $ |
+| Chuẩn hóa input | Không nêu | Scalar normalization về $\mathbb E\Vert \mathbf x\Vert ^2=D$ |
 
 Nhân L1 với chuẩn decoder giúp **ngăn gian lận** (làm $f$ nhỏ, decoder lớn). Nó cũng cho phép định nghĩa lại:
 
@@ -432,11 +432,11 @@ Công thức $\mathbf x'=\mathbf x+(c-f_k)\mathbf d_k$ cho phép "trả lại" m
 
 | Khái niệm | Công thức hoặc định nghĩa | Ý nghĩa |
 |---|---|---|
-| Chuẩn hóa | $\mathbb E\|\mathbf x\|_2^2=D$ | L1 coefficient so sánh được |
+| Chuẩn hóa | $\mathbb E\Vert \mathbf x\Vert _2^2=D$ | L1 coefficient so sánh được |
 | Encoder | $f_i=\mathrm{ReLU}(\mathbf W^{enc}_{i}\mathbf x+b^{enc}_i)$ | Phát hiện feature |
 | Decoder | $\hat{\mathbf x}=\mathbf b^{dec}+\sum_i f_i\mathbf W^{dec}_{\cdot,i}$ | Tái tạo |
-| Loss | $\|\mathbf x-\hat{\mathbf x}\|^2+\lambda\sum_i f_i\|\mathbf W^{dec}_{\cdot,i}\|$ | Thưa, không gian lận chuẩn |
-| Feature activation | $f_i\cdot\|\mathbf W^{dec}_{\cdot,i}\|$ | Đơn vị dùng trong paper |
+| Loss | $\Vert \mathbf x-\hat{\mathbf x}\Vert ^2+\lambda\sum_i f_i\Vert \mathbf W^{dec}_{\cdot,i}\Vert $ | Thưa, không gian lận chuẩn |
+| Feature activation | $f_i\cdot\Vert \mathbf W^{dec}_{\cdot,i}\Vert $ | Đơn vị dùng trong paper |
 | Scaling law | $\mathcal L^*\propto C^{-\alpha}$; $F^*,S^*$ power law | Phân bổ compute cho SAE |
 | Ngưỡng tần suất | $p\gtrsim 1/N_{alive}$ | Khi nào khái niệm có feature riêng |
 | Attribution | $f_i\,\mathbf W^{dec}_{\cdot,i}\cdot\nabla_{\mathbf x}\Delta z$ | Xấp xỉ ablation (corr 0,81) |

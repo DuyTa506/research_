@@ -68,10 +68,8 @@ Paper giữ lập trường **agnostic**: không khẳng định mô hình "th�
 
 Lý do là cross-entropy thích đa nghĩa. Ví dụ đồ chơi của paper: một neuron nhị phân, 4 feature loại trừ nhau A/B/C/D (mỗi cái 1/4 thời gian), mỗi feature dự đoán đúng một token.
 
-| Chiến lược | Loss |
-|---|---|
-| Neuron chỉ bật cho A; còn lại đoán đều B/C/D | $\tfrac34\ln 3\approx 0.82$ |
-| Neuron bật cho A hoặc B (đoán đều A/B); tắt thì đoán đều C/D | $\ln 2\approx 0.69$ |
+- Neuron chỉ bật cho A, còn lại đoán đều B/C/D: loss $=\tfrac34\ln 3\approx 0.82$.
+- Neuron bật cho A hoặc B (đoán đều A/B), tắt thì đoán đều C/D: loss $=\ln 2\approx 0.69$.
 
 Phương án đa nghĩa có loss **thấp hơn**, dù không có superposition. Ngược lại, khi học SAE ta dùng **MSE**, loss này không thưởng cho đa nghĩa theo cách đó; vì vậy ràng buộc thưa có thể ngăn superposition hình thành *bên trong từ điển*.
 
@@ -127,8 +125,7 @@ Vì sao mô hình 1 layer? Ít "true feature" hơn nên từ điển nhỏ có t
 
 ### 4.2 Các sửa đổi so với autoencoder chuẩn (theo thứ tự quan trọng)
 
-1. **Pre-encoder bias** (đã nêu).
-2. **Không tie** encoder và decoder.
+1–2. **Pre-encoder bias** và **không tie** encoder/decoder (mục 3).
 3. **Neuron resampling** (hồi sinh neuron chết) giúp tìm thêm feature, loss tổng thấp hơn.
 4. **Huấn luyện nhiều step**, kể cả khi loss có vẻ đã phẳng.
 5. **Sweep learning rate**: LR thấp hơn (đủ step) cho nhiều feature "thật" hơn; annealing LR không giúp thêm.
@@ -160,15 +157,7 @@ Tác giả cảnh báo con số này **có xu hướng phóng đại**, vì zero
 
 ## 5. Đánh giá một feature: specificity, sensitivity, downstream effect
 
-Paper chọn bốn feature dễ kiểm chứng (cố ý cherry-pick): **Arabic script** (A/1/3450), **DNA** (A/1/2937), **base64** (A/1/2357), **Hebrew** (A/1/416). Với mỗi feature, họ cố xác lập năm điều:
-
-| Tuyên bố | Ý nghĩa |
-|---|---|
-| **Specificity** (tính đặc hiệu) | Khi feature bật, ngữ cảnh giả thuyết thường có mặt |
-| **Sensitivity** (độ nhạy) | Khi ngữ cảnh có mặt, feature thường bật |
-| **Downstream effect** | Feature gây ra hành vi phù hợp |
-| **Không phải neuron** | Không trùng với một neuron đơn lẻ |
-| **Universal** | Có feature tương tự ở mô hình B |
+Paper chọn bốn feature dễ kiểm chứng (cố ý cherry-pick): **Arabic script** (A/1/3450), **DNA** (A/1/2937), **base64** (A/1/2357), **Hebrew** (A/1/416). Với mỗi feature, họ cố xác lập năm điều: (1) **specificity** (tính đặc hiệu: khi feature bật, ngữ cảnh giả thuyết thường có mặt); (2) **sensitivity** (độ nhạy: khi ngữ cảnh có mặt, feature thường bật); (3) **downstream effect** phù hợp; (4) **không trùng** một neuron đơn lẻ; (5) **universal**: có feature tương tự ở mô hình B.
 
 ### 5.1 Computational proxy
 
@@ -231,9 +220,7 @@ Của A/1 (4.096 feature): **168 dead** (không bật trên 100 triệu ví dụ
 | **Automated interp, activation** | Claude viết giải thích từ ví dụ, rồi dự đoán activation trên ví dụ mới; Spearman trên 60 ví dụ × 9 token = 540 dự đoán | Feature tốt hơn neuron rõ rệt |
 | **Automated interp, logit** | Từ giải thích, đoán token nào feature đẩy lên; trộn 50/50 top logit và ngẫu nhiên | **74%** trung bình cho feature, **58%** cho neuron (ngẫu nhiên = 50%) |
 
-**Automated interpretability**: dùng một LLM để viết và chấm giải thích feature (theo Bills et al.).
-
-Rubric con người gồm: độ tự tin (0–3), nhất quán của token activation cao (0–5), nhất quán của logit dương (0–3), có tách biệt độ lớn giữa logit nhất quán/không nhất quán (0–1), độ cụ thể (0–3).
+**Automated interpretability**: dùng một LLM để viết và chấm giải thích feature (theo Bills et al.). Rubric con người gồm: độ tự tin (0–3), nhất quán của token activation cao (0–5), nhất quán của logit dương (0–3), có tách biệt độ lớn giữa logit nhất quán/không nhất quán (0–1), độ cụ thể (0–3).
 
 ### 6.2 Activation interval
 
@@ -304,8 +291,7 @@ Universality rộng hơn: nhiều feature khớp với neuron trong mô hình So
 
 ## 10. Dead và ultralow-density feature
 
-- **Feature density**: tỉ lệ token mà feature khác 0. Feature thật thường có density khoảng $10^{-3}$ đến $10^{-6}$.
-- **Dead feature**: không bao giờ bật.
+- **Feature density**: tỉ lệ token mà feature khác 0; feature thật thường có density khoảng $10^{-3}$ đến $10^{-6}$. **Dead feature**: không bao giờ bật.
 - **Ultralow-density cluster**: cụm bên trái của histogram (ví dụ quanh $10^{-7}$ ở run A/16), gần như **không diễn giải được**; cụm "high density" (quanh $10^{-5}$) thì hầu hết diễn giải được.
 - Khi hai cụm chồng nhau (từ điển lớn, L1 lớn), có thể tách bằng ba thống kê: density, encoder bias, tích vô hướng encoder·decoder.
 - Tác giả cho rằng cụm ultralow là **artifact của huấn luyện SAE**. Huấn luyện lâu hơn sẽ "giết" thêm feature ultralow, nên đếm dead feature thôi là chưa đủ.
@@ -320,8 +306,7 @@ Universality rộng hơn: nhiều feature khớp với neuron trong mô hình So
 |---|---|
 | Proxy định lượng | Arabic: 81% token active là Arabic, Pearson 0,74; DNA 0,8 |
 | So với neuron | 27 neuron có hệ số ≥ 0,1; neuron gần nhất đa nghĩa |
-| Causal: ablation | Tắt feature làm giảm likelihood token đúng loại |
-| Causal: pinned sampling | Ghim feature thì sinh ra Arabic/base64 |
+| Causal: ablation, pinned sampling | Tắt feature làm giảm likelihood token đúng loại; ghim feature thì sinh Arabic/base64 |
 | Logit weight | Mode phụ đúng nhóm token |
 | Human + automated interp | Median 12 so với 0; logit 74% so với 58% |
 | Baseline random weights | Feature giàu cấu trúc hơn hẳn |
@@ -356,8 +341,7 @@ Universality rộng hơn: nhiều feature khớp với neuron trong mô hình So
 
 - Chạy mô hình trên dữ liệu **đa dạng, đúng miền** (trang tài liệu và văn bản đầu ra OCR). Paper nhấn mạnh **scale dữ liệu quan trọng**: nhiều dữ liệu hơn cho feature "sắc" hơn.
 - Như paper: lấy mẫu một số token mỗi context, **xáo trộn** để một batch đến từ nhiều context, và **không lặp lại** dữ liệu.
-- Với VLM: lưu riêng cờ "vision token hay text token" để phân tích sau; chuẩn của hai loại có thể khác nhau **(gợi ý của người viết)**.
-- Bỏ token BOS/attention-sink nếu chuẩn của chúng bất thường **(gợi ý của người viết)**.
+- Với VLM: lưu riêng cờ "vision token hay text token" để phân tích sau; chuẩn của hai loại có thể khác nhau; bỏ token BOS/attention-sink nếu chuẩn bất thường **(gợi ý của người viết)**.
 
 ### Bước 2: Chuẩn hóa
 
@@ -408,7 +392,7 @@ with torch.no_grad():
 |---|---|
 | L0 | Paper 2023 nhắm < 10–20 với MLP 512; bài 2024 (residual Sonnet) < 300. Hãy so tương đối |
 | Loss recovered | Thay activation bằng $\hat{\mathbf x}$, đo CE (hoặc CER cho OCR) |
-| Variance explained | $1-\mathbb E\|\mathbf x-\hat{\mathbf x}\|^2/\mathrm{Var}(\mathbf x)$ (bài 2024 báo ≥ 65%) |
+| Variance explained | $1-\mathbb E\Vert \mathbf x-\hat{\mathbf x}\Vert ^2/\mathrm{Var}(\mathbf x)$ (bài 2024 báo ≥ 65%) |
 | Density histogram | Số feature sống ngoài cụm ultralow; ít feature density > 1% |
 | Dead features | Đếm trên một mẫu lớn (2024: $10^7$ token) |
 
@@ -446,13 +430,10 @@ Feature có $\Delta_i$ lớn là phần $D_{res}$ "có tên". Dự đoán cần 
 
 Thay vì chỉ MSE trên hidden state, thêm loss khớp $f(h_T)$ và $f(Ah_S)$ (hoặc chỉ các feature quan trọng cho OCR). Ưu điểm có thể có: MSE trên hidden state bị chi phối bởi các hướng phương sai lớn, còn feature thưa ít phương sai nhưng quan trọng (ví dụ ký tự hiếm) lại được trọng số rõ ràng.
 
-### 14.4 Liên hệ OCR
+### 14.4 Liên hệ OCR và GatedDeltaNet
 
-Các automata "tiền tố và hậu tố byte" (Tamil, tiếng Trung) gợi ý: chữ tiếng Việt có dấu, nếu bị tokenizer tách nhiều byte, có thể cần những cặp feature tương tự. Pruning làm hỏng một node có thể gây lỗi dấu có hệ thống. Feature splitting cũng gợi ý student nhỏ có thể "gộp" feature (như từ điển nhỏ), mất phân biệt tinh (ví dụ `ơ` và `ở`).
-
-### 14.5 GatedDeltaNet
-
-Paper chỉ xử lý MLP; attention superposition chưa giải. SAE trên residual stream không phụ thuộc loại token mixer, nên vẫn dùng được cho kiến trúc lai, nhưng nó không cho biết feature được tạo ra bởi khối linear-attention hay full-attention.
+- Các automata "tiền tố và hậu tố byte" (Tamil, tiếng Trung) gợi ý: chữ tiếng Việt có dấu, nếu bị tokenizer tách nhiều byte, có thể cần những cặp feature tương tự. Pruning làm hỏng một node có thể gây lỗi dấu có hệ thống. Feature splitting cũng gợi ý student nhỏ có thể "gộp" feature (như từ điển nhỏ), mất phân biệt tinh (ví dụ `ơ` và `ở`).
+- Paper chỉ xử lý MLP; attention superposition chưa giải. SAE trên residual stream không phụ thuộc loại token mixer, nên vẫn dùng được cho kiến trúc lai, nhưng nó không cho biết feature được tạo ra bởi khối linear-attention hay full-attention.
 
 ---
 
@@ -473,12 +454,11 @@ Paper chỉ xử lý MLP; attention superposition chưa giải. SAE trên residu
 | Phân rã feature | $\mathbf x\approx\mathbf b+\sum_i f_i(\mathbf x)\mathbf d_i$ | Activation = tổng thưa các hướng |
 | Encoder | $\mathbf f=\mathrm{ReLU}(W_e(\mathbf x-\mathbf b_d)+\mathbf b_e)$ | Phát hiện feature |
 | Decoder | $\hat{\mathbf x}=W_d\mathbf f+\mathbf b_d$, cột chuẩn 1 | Từ điển hướng feature |
-| Loss | $\|\mathbf x-\hat{\mathbf x}\|^2+\lambda\|\mathbf f\|_1$ | Tái tạo + thưa |
+| Loss | $\Vert \mathbf x-\hat{\mathbf x}\Vert ^2+\lambda\Vert \mathbf f\Vert _1$ | Tái tạo + thưa |
 | L0 | $\#\{i: f_i>0\}$ | Độ thưa thực tế |
 | Loss recovered | $(L_{0}-L_{SAE})/(L_{0}-L_{orig})$ | % chức năng MLP được giải thích |
 | Logit weight | $\mathbf d_i^\top W_{down}\pi L W_U$ | Tác động trực tiếp lên logit |
 | Ablation | $\mathbf x\leftarrow\mathbf x-f_i\mathbf d_i$ | Kiểm tra nhân quả |
-| Attribution sim. | $f_i(t_j)\,v_{i,t_{j+1}}$ | So feature giữa mô hình |
 | Specificity / sensitivity | P(ngữ cảnh \| feature bật) / P(feature bật \| ngữ cảnh) | Đánh giá diễn giải |
 | Feature splitting | 1 → 3 → nhiều feature base64 | Độ phân giải tăng theo kích thước |
 | Universality | median corr 0,72 (feature) so với 0,46 (neuron) | Feature lặp lại giữa seed |

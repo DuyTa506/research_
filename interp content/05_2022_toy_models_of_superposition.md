@@ -91,9 +91,7 @@ $$
 \boxed{\text{ReLU output: } x'=\operatorname{ReLU}(W^\top W x+b)}
 $$
 
-- Cột $W_i\in\mathbb R^m$ là hướng biểu diễn feature $i$.
-- Dùng chung $W$ và $W^\top$ (tied) để không mơ hồ về hướng của feature.
-- Bias cho phép đặt feature không được biểu diễn về giá trị kỳ vọng, và quan trọng hơn: **bias âm giúp cắt nhiễu nhỏ**.
+Cột $W_i\in\mathbb R^m$ là hướng biểu diễn feature $i$; dùng chung $W$ và $W^\top$ (tied) để không mơ hồ về hướng của feature. Bias cho phép đặt feature không được biểu diễn về giá trị kỳ vọng, và quan trọng hơn: **bias âm giúp cắt nhiễu nhỏ**.
 
 ### 2.3 Loss
 
@@ -245,8 +243,7 @@ Có tương ứng chính xác giữa polytope và ma trận dạng $W^\top W$ (�
 - Điểm ngũ giác không nằm trên đường tròn đơn vị vì mô hình đặt bias hơi âm để cắt nhiễu và bù bằng $\lVert W_i\rVert=1/(1-b_i)$.
 - **Feature tương quan** (cùng bật): ưu tiên trực giao (khác tegum factor); không được thì đặt cạnh nhau (nhiễu dương); thiếu chỗ thì **gộp thành principal component** $(a+b)/\sqrt2$. Khi dữ liệu dày hơn, nghiệm dần thành PCA.
 - **Feature phản tương quan** (không cùng bật): ưa nằm cùng tegum factor, lý tưởng là antipodal.
-- **Local almost-orthogonal basis**: các nhóm feature tương quan tự tạo cơ sở gần trực giao cục bộ, dù toàn mô hình đang superposition. Gợi ý PCA có thể dùng được trên phân phối con hẹp.
-- Kết luận: **PCA và superposition là hai chiến lược bổ sung**; tương quan nhiều thì PCA thắng, thưa nhiều thì superposition thắng.
+- **Local almost-orthogonal basis**: các nhóm feature tương quan tự tạo cơ sở gần trực giao cục bộ, dù toàn mô hình đang superposition. Gợi ý PCA có thể dùng được trên phân phối con hẹp. Tổng quát: **PCA và superposition là hai chiến lược bổ sung**; tương quan nhiều thì PCA thắng, thưa nhiều thì superposition thắng.
 
 ---
 
@@ -284,7 +281,6 @@ Giờ $W$ là ánh xạ **feature → neuron** và đọc trực tiếp được
 - Polysemantic có cấu trúc: feature tương ứng với *tập* neuron; neuron đi từ 1 feature → vài feature → nhiều hơn.
 - **Giới hạn**: mô hình này không *cần* ReLU ẩn nên sẽ né nó (đặt bias ẩn dương để chạy vùng tuyến tính). Vì vậy paper chuyển sang mô hình tính toán ở mục 10.
 
-**Stacked bar plot**: mỗi cột là một neuron, các khối màu là trọng số tới từng feature. Neuron có nhiều khối thì polysemantic.
 
 ---
 
@@ -330,11 +326,7 @@ Một cặp neuron làm việc như sau:
 
 Ý về MoE: superposition khai thác **khoảng cách giữa độ thưa của neuron và độ thưa của feature**. MoE "ăn" đúng khoảng cách đó, nên dự đoán mô hình MoE có ít superposition hơn. Ràng buộc thật sự là FLOP, không phải số neuron.
 
-**Cân nhắc thêm:**
-
-- **Phase change là lý do để lạc quan**: có một vùng không superposition hoàn toàn; nếu đẩy được mô hình sang đó thì xóa hẳn.
-- Một mô hình không superposition (dù kém) cũng là "ground truth" quý để nghiên cứu.
-- **Local basis không đủ** cho safety, vì cần giải thích trên toàn phân phối.
+**Cân nhắc thêm:** phase change là lý do để lạc quan (có một vùng hoàn toàn không superposition; đẩy được mô hình sang đó thì xóa hẳn); một mô hình không superposition, dù kém, vẫn là "ground truth" quý để nghiên cứu; còn local basis thì không đủ cho safety vì cần giải thích trên toàn phân phối.
 
 **Liên hệ mạng thật** (dự đoán khớp quan sát): polysemantic neuron tồn tại; monosemantic và polysemantic cùng layer; InceptionV1 có nhiều polysemantic hơn ở layer sâu (feature cấp cao thưa hơn); **MLP đầu tiên của Transformer cực kỳ polysemantic** (phân biệt "die" tiếng Anh/Đức/Hà Lan/Afrikaans là các feature rất thưa).
 
@@ -360,8 +352,7 @@ Một cặp neuron làm việc như sau:
 
 - **Toy model rất đơn giản**: một ma trận, ReLU, dữ liệu độc lập, phân phối đều. Chính paper nói "rất không rõ nên khái quát gì sang mạng thật".
 - Paper đoán superposition, mono/polysemantic và có thể quan hệ với adversarial sẽ khái quát; còn **hình học (polytope) và learning dynamics thì không chắc**, có thể là đặc thù của toy.
-- Mô hình ReLU hidden layer "né" ReLU nếu được, nên chỉ cho kết quả trong vùng hẹp.
-- Tối ưu khó (nhất là $m=2$), phải chọn nghiệm tốt nhất từ nhiều lần chạy, nên "nghiệm điển hình" có thể khác nghiệm tối ưu.
+- Mô hình ReLU hidden layer "né" ReLU nếu được. Tối ưu khó (nhất là $m=2$), phải chọn nghiệm tốt nhất từ nhiều lần chạy, nên "nghiệm điển hình" có thể khác nghiệm tối ưu.
 - Chưa có lý thuyết cho non-uniform superposition; chưa có cách ước lượng đường importance/sparsity của mô hình thật.
 - Tính toán trong superposition mới chỉ được chứng minh cho $\lvert x\rvert$; chưa rõ lớp phép tính nào làm được.
 

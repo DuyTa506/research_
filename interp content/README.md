@@ -10,7 +10,12 @@ Nếu gặp thuật ngữ lạ, xem trước [`../reports/Giải thích thuật 
 
 ## Lộ trình
 
-### Giai đoạn 1: Nền tảng (đọc trước tiên)
+### Giai đoạn 0: Chuẩn bị
+| # | File | Nội dung |
+|---|---|---|
+| 00 | `00_preface_toan_va_huong_dan.md` | Toán nền tảng (đại số tuyến tính, hình học nhiều chiều, KL/softmax, tính thưa, attribution), ký hiệu transformer, cách đọc paper interp, công cụ, lịch học, bài tự kiểm tra có đáp án. **Đọc trước tiên.** |
+
+### Giai đoạn 1: Nền tảng
 Học cách "nhìn" một transformer như hệ thống đọc/ghi vào residual stream, và hiểu circuit là gì.
 
 | # | File | Bài gốc | Vì sao đọc |

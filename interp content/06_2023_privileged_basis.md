@@ -36,12 +36,7 @@ Mô hình thí nghiệm: Transformer 200 triệu tham số, $d_{model}=1280$.
 
 **Outlier** (theo định nghĩa của Dettmers): giá trị tuyệt đối $>6$. Trên batch 128 chuỗi × 1024 token, số chiều từng có outlier tăng theo độ sâu; layer điển hình có **20–60 chiều outlier** trên 1280.
 
-**Kurtosis** (độ nhọn/độ dày đuôi, Gaussian có kurtosis = 3) là thước đo không cần ngưỡng. Lập luận:
-
-1. Nếu không có privileged basis, mỗi feature nằm theo một hướng ngẫu nhiên.
-2. Một hướng ngẫu nhiên tương đương (sai khác hệ số) với một vector các mẫu Gaussian độc lập, vì Gaussian đẳng hướng bất biến khi xoay.
-3. Activation là tổng các hướng như vậy, nên các tọa độ của nó phân phối Gaussian.
-4. Coi các tọa độ của activation một token là mẫu, tính kurtosis, rồi lấy trung bình qua nhiều token:
+**Kurtosis** (độ nhọn/độ dày đuôi, Gaussian có kurtosis = 3) là thước đo không cần ngưỡng. Lập luận: nếu không có privileged basis, mỗi feature nằm theo một hướng ngẫu nhiên; một hướng ngẫu nhiên tương đương (sai khác hệ số) với một vector mẫu Gaussian độc lập, vì Gaussian đẳng hướng bất biến khi xoay; activation là tổng các hướng như vậy nên các tọa độ của nó phân phối Gaussian. Vậy coi các tọa độ của activation một token là mẫu, tính kurtosis, rồi lấy trung bình qua nhiều token:
 
 $$
 \boxed{\kappa(h)=\frac{\frac1d\sum_{i=1}^d (h_i-\bar h)^4}{\left(\frac1d\sum_{i=1}^d (h_i-\bar h)^2\right)^2}\;\approx\;3 \text{ nếu basis không đặc quyền}}
@@ -50,8 +45,7 @@ $$
 (Công thức kurtosis chuẩn do người viết điền vào; paper mô tả bằng lời.)
 
 - $\kappa>3$ thì có privileged basis. Chiều ngược lại không chắc: $\kappa=3$ cũng có thể do bản thân feature là Gaussian, nhưng trực giác là feature thường thưa.
-- Kết quả: residual stream **cực kỳ không Gaussian** ở các layer.
-- Kiểm tra đối chứng: áp một phép xoay ngẫu nhiên cố định lên cùng activation thì kurtosis về **gần đúng 3**.
+- Kết quả: residual stream **cực kỳ không Gaussian** ở các layer. Đối chứng: áp một phép xoay ngẫu nhiên cố định lên cùng activation thì kurtosis về **gần đúng 3**.
 
 ---
 
@@ -84,11 +78,7 @@ Giả thuyết (Neel Nanda, Alex Silverstein): float 16/32-bit mất chính xác
 | Shared rotation | Một phép xoay chung: tách "basis truyền thông" (residual) khỏi "basis tính toán" (attention/MLP) | Hiệu năng ≈ baseline; residual có $\kappa\approx3$; **trong basis tính toán vẫn đuôi dày** giống baseline |
 | Independent rotations | Mỗi lần đọc/ghi một phép xoay riêng | Hiệu năng ≈ baseline; $\kappa\approx3$; chỉ đuôi nhẹ, chủ yếu ở layer đầu |
 
-Diễn giải của paper:
-
-- Transformer **không cần** privileged basis để huấn luyện tốt, nên privileged basis là tác dụng phụ chứ không thiết yếu. Đây là bằng chứng vừa phải chống giả thuyết float.
-- Đuôi dày xuất hiện ở **basis tính toán**, không phải ở residual, nên sự thẳng trục là sản phẩm của tính toán bên trong layer. Đây là bằng chứng mạnh chống giả thuyết float.
-- Khi mọi layer dùng chung một basis, chúng "thông đồng" tạo outlier; một layer đơn lẻ chỉ có hiệu ứng nhỏ.
+Diễn giải của paper: Transformer **không cần** privileged basis để huấn luyện tốt, nên privileged basis là tác dụng phụ (bằng chứng vừa phải chống giả thuyết float). Đuôi dày xuất hiện ở **basis tính toán**, không phải ở residual, nên sự thẳng trục là sản phẩm của tính toán bên trong layer (bằng chứng mạnh chống giả thuyết float). Khi mọi layer dùng chung một basis, chúng "thông đồng" tạo outlier; một layer đơn lẻ chỉ có hiệu ứng nhỏ.
 
 Loss curve: khác chút đầu huấn luyện, hội tụ về mức trong nhiễu sau khoảng một tỷ token.
 
@@ -96,9 +86,7 @@ Loss curve: khác chút đầu huấn luyện, hội tụ về mức trong nhi�
 
 ## 5. Kết luận: nghi phạm là Adam
 
-**Adam** chuẩn hóa cập nhật gradient **theo từng phần tử** (moment theo từng tọa độ), nên ưu tiên basis mà trọng số được lưu, so với các hướng tùy ý trong không gian tham số. Sau khi loại LayerNorm và float, đây là phép phụ thuộc basis mạnh nhất còn lại.
-
-Paper **không khẳng định chắc chắn**. Hai thí nghiệm đề xuất nhưng chưa làm: huấn luyện bằng SGD (optimizer không phụ thuộc basis), hoặc lưu moment của Adam ở một basis khác với trọng số.
+**Adam** chuẩn hóa cập nhật gradient **theo từng phần tử** (moment theo từng tọa độ), nên ưu tiên basis mà trọng số được lưu, so với các hướng tùy ý trong không gian tham số. Sau khi loại LayerNorm và float, đây là phép phụ thuộc basis mạnh nhất còn lại. Paper **không khẳng định chắc chắn**. Hai thí nghiệm đề xuất nhưng chưa làm: huấn luyện bằng SGD (optimizer không phụ thuộc basis), hoặc lưu moment của Adam ở một basis khác với trọng số.
 
 ---
 
@@ -117,10 +105,8 @@ Paper **không khẳng định chắc chắn**. Hai thí nghiệm đề xuất n
 
 ## 7. Giới hạn
 
-- Kết luận về Adam là **loại trừ**, không phải chứng minh trực tiếp.
-- Chỉ một mô hình cỡ 200M, một codebase; outlier ở mô hình lớn có thể có thêm cơ chế.
-- Kurtosis $=3$ không chứng minh basis không đặc quyền.
-- Paper không trả lời *outlier biểu diễn gì*.
+- Kết luận về Adam là **loại trừ**, không phải chứng minh trực tiếp; kurtosis $=3$ cũng không chứng minh basis không đặc quyền.
+- Chỉ một mô hình cỡ 200M, một codebase; outlier ở mô hình lớn có thể có thêm cơ chế. Paper không trả lời *outlier biểu diễn gì*.
 
 ---
 
