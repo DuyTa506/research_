@@ -138,7 +138,7 @@ Kiểm tra bằng số (tự tính): $N=\sqrt{5.76\times10^{23}/120}=\sqrt{4.8\t
 | 1 nghìn tỷ | $1.27\times10^{26}$ | 21.2 nghìn tỷ | 21 |
 | 10 nghìn tỷ | $1.30\times10^{28}$ | 216.2 nghìn tỷ | 21.6 |
 
-Cột "FLOPs (Gopher unit)": mô hình 67B ứng với 1 đơn vị Gopher ($5.76\times10^{23}$); GPT-3 175B tối ưu cần 6.7 đơn vị. Paper nêu: mô hình 175B nên huấn luyện với $4.41\times10^{24}$ FLOPs (cách ghi chú trong text) và trên 4.2 nghìn tỷ token; Gopher-like 280B tối ưu ở khoảng $10^{25}$ FLOPs với 6.8 nghìn tỷ token; trừ khi có $10^{26}$ FLOPs, mô hình 1 nghìn tỷ tham số khó là tối ưu. (Các cách 2 và 3 cho số khác một chút, xem Bảng A3.) Dự đoán cho ngân sách Gopher ($5.76\times10^{23}$): mô hình tối ưu nhỏ hơn 4 lần (khoảng 40 đến 70 tỷ) và huấn luyện nhiều hơn 4 lần token. Cách 3 ước lượng 40B (Hình 4), nên paper chọn 70B cho Chinchilla (đầu cao của dải, vì lý do dữ liệu và hiệu quả tính toán).
+Cột "FLOPs (Gopher unit)": mô hình 67B ứng với 1 đơn vị Gopher ($5.76\times10^{23}$); GPT-3 175B tối ưu cần 6.7 đơn vị. Phần chữ của paper (tổng hợp các cách) nêu: mô hình 175B nên huấn luyện với $4.41\times10^{24}$ FLOPs và trên 4.2 nghìn tỷ token (khác chút so với Bảng 3); Gopher-like 280B tối ưu ở khoảng $10^{25}$ FLOPs với 6.8 nghìn tỷ token; trừ khi có $10^{26}$ FLOPs, mô hình 1 nghìn tỷ tham số khó là tối ưu. (Các cách 2 và 3 cho số khác một chút, xem Bảng A3.) Dự đoán cho ngân sách Gopher ($5.76\times10^{23}$): mô hình tối ưu nhỏ hơn 4 lần (khoảng 40 đến 70 tỷ) và huấn luyện nhiều hơn 4 lần token. Cách 3 ước lượng 40B (Hình 4); paper chọn 70B cho Chinchilla, tức đầu cao của dải 40 đến 70B, "vì lý do dữ liệu và hiệu quả tính toán".
 
 Mô hình Chinchilla vs Gopher (Bảng 4): cùng ngân sách FLOPs, cùng kiến trúc cơ bản.
 
@@ -194,7 +194,7 @@ Trên MMLU, Chinchilla tốt hơn Gopher ở 51/57 tác vụ, bằng ở 2, kém
 
 ## 7. Liên hệ với các bài khác
 
-- **03** Kaplan: bài được phản biện; so sánh $0.73/0.27$ với $0.5/0.5$, và công thức $C\approx6ND$ lấy từ đó. Khác biệt chính nằm ở lịch lr, dải kích thước mô hình, và việc có tính embedding vào $N$ hay không.
+- **03** Kaplan: bài được phản biện; so sánh $0.73/0.27$ với $0.5/0.5$, và công thức $C\approx6ND$ lấy từ đó. Khác biệt chính (theo paper) nằm ở lịch lr và dải kích thước mô hình; ngoài ra quy ước $N$ cũng khác (Chinchilla đếm cả embedding, Kaplan thì không).
 - **02** GPT-3: ví dụ điển hình của mô hình lớn huấn luyện 300B token (theo Bảng 1 của bài này, lẽ ra GPT-3 nên có nhiều token hơn nhiều).
 - **05** LLaMA, **06** Mistral: áp dụng bài học này và đi xa hơn (huấn luyện mô hình nhỏ nhiều token vì tối ưu suy luận).
 - **27, 28** MoE: Chinchilla nhắc rằng lợi ích tính toán của routed model giảm ở quy mô lớn (Clark et al. 2022).
