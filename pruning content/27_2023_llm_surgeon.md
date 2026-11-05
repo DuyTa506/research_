@@ -3,7 +3,7 @@
 **Tác giả:** Tycho F.A. van der Ouderaa, Markus Nagel, Mart van Baalen, Yuki M. Asano, Tijmen Blankevoort (Imperial College London; Qualcomm AI Research; QUVA Lab, University of Amsterdam).  
 **Venue / arXiv:** arXiv:2312.17244 (28/12/2023, bản v2 03/2024). Bản text không ghi tên hội nghị.  
 **Nguồn:** https://arxiv.org/abs/2312.17244  
-**Chủ đề:** Pruning bậc hai kiểu OBS/OBD cho LLM với xấp xỉ曲率 Kronecker-factored (KFAC) của Fisher có tính cả gradient; hỗ trợ structured (hàng/cột), semi-structured (N:M), unstructured; phân bổ thưa toàn cục theo ngưỡng; cập nhật trọng số có tương quan; cắt nhiều "shot".  
+**Chủ đề:** Pruning bậc hai kiểu OBS/OBD cho LLM với xấp xỉ độ cong Kronecker-factored (KFAC) của Fisher có tính cả gradient; hỗ trợ structured (hàng/cột), semi-structured (N:M), unstructured; phân bổ thưa toàn cục theo ngưỡng; cập nhật trọng số có tương quan; cắt nhiều "shot".  
 **Vị trí trong lộ trình:** Đọc sau 01 (OBD/OBS), 22 (OBC), 23 (SparseGPT), 25 (ZipLM) và 26 (LLM-Pruner). Bài này là nỗ lực "làm OBS đúng nghĩa" cho LLM: dùng loss thật (có gradient) thay vì chỉ lỗi tái tạo từng layer. Bài kế: 28 (FLAP), 29 (SliceGPT, được trích như concurrent work).
 
 > Ghi chú học tập bằng tiếng Việt, không phải bản dịch. Số liệu lấy từ paper. Phần liên hệ D_lin / D_res và dự án là suy luận của chúng ta.
@@ -132,15 +132,15 @@ Paper kết luận: nhiều tương quan hơn thì tốt hơn, nhất là trên 
 
 **Semi-structured 2:4 (Table 3; PPL):** OPT-125m / 1.3b / 2.7b / 6.7b: LLM Surgeon 44.64 / 25.10 / 14.64 / 12.10 so với SparseGPT 45.51 / 29.44 / 14.92 / 13.01.
 
-**Unstructured (Table 4):** Llama-v2 7B: LLM Surgeon (nhiều shot, tương quan đầy đủ) 5.13 (90%), 5.20 (80%), 5.36 (70%), 5.66 (60%), 6.08 (50%) so với SparseGPT 5.49, 5.58, 5.71, 5.94, 6.51. Cũng thắng SparseGPT trên OPT.
+**Unstructured (Table 4):** Llama-v2 7B: LLM Surgeon (nhiều shot, tương quan đầy đủ) 5.13 (90%), 5.20 (80%), 5.36 (70%), 5.66 (60%), 6.08 (50%) so với SparseGPT 5.49, 5.58, 5.71, 5.94, 6.51. Trên OPT: nhỉnh hơn hoặc ngang SparseGPT (ví dụ OPT-125m 90%: 27.69 so với 27.93; OPT-6.7b 90%: cùng 10.86).
 
 **Chi phí tính (phụ lục H, Table 11/12):** Llama-v2 7B structured: LLM Surgeon 17 giờ 08 phút trên 4 H100 80GB (K-OBD 16 giờ 58 phút); 13B: 1 ngày 9 giờ 26 phút trên 8 H100 80GB. Unstructured Llama-v2 7B: LLM Surgeon 2 ngày 8 giờ 16 phút (4 H100) so với SparseGPT dưới 5 phút trên 1 GPU 32GB.
 
 ## 5. Phân tích / ablation
 
 - **Tương quan trong cập nhật (Table 1):** từ K-OBD (không cập nhật) đến cập nhật trong hàng/cột đến cập nhật đầy đủ, PPL giảm đều; đối với Llama-v2 7B ở 50%: 46.64, 25.62, 15.38. Nghĩa là **phần bù (cập nhật trọng số) đóng góp nhiều** khi cắt structured mạnh.
-- **Gradient (G) quan trọng:** K-OBD (có $G$) tốt hơn L-OBD (chỉ $A$) nhiều (ví dụ 90% Llama-v2 7B: 5.48 so với 14259), và LLM Surgeon (structured) vượt SparseGPT-style "chỉ activation" ở các thiết lập khác. Paper nhấn mạnh việc concurrent work SliceGPT "bỏ qua thông tin gradient, nên kém hơn" (nhận định của tác giả; paper không so trực tiếp bằng số liệu).
-- **Số shot (Table 9, OPT-1.3b structured):** 90%: 6/8/10 shot cho PPL 14.70 / 14.70 / 14.72; 80%: 12/16/20 shot cho 15.14 / 15.12 / 15.08; shot nhiều hơn tốt hơn một chút (bảng đầy đủ có thêm các mức thấp hơn).
+- **Gradient (G) quan trọng:** K-OBD (có $G$) tốt hơn L-OBD (chỉ $A$) nhiều (ví dụ 90% Llama-v2 7B: 5.48 so với 14259). Paper nhấn mạnh việc concurrent work SliceGPT "bỏ qua thông tin gradient, nên kém hơn" (nhận định của tác giả; paper không so trực tiếp bằng số liệu).
+- **Số shot (Table 9, OPT-1.3b structured):** 90%: 6/8/10 shot cho PPL 14.70 / 14.70 / 14.72; 80%: 12/16/20 shot cho 15.14 / 15.12 / 15.08; chênh lệch rất nhỏ ở các mức này (ở 90% gần như không đổi; ở 80% giảm nhẹ). Paper nói mức thưa cao cần nhiều shot hơn; bảng đầy đủ có cả các mức thấp hơn mà ta không chép.
 - **LoRA xen kẽ (Table 2, OPT-125m structured):** có ích với mô hình nhỏ nhất (ví dụ 50%: 49.78 xuống 36.50) nhưng **không ích với mô hình lớn**; giả thuyết của tác giả: mô hình lớn dễ overfit vài batch WikiText-2.
 - **Phân bổ sparsity học được (Fig. 4, OPT-125m):** cắt nhiều hơn ở layer đầu và ít hơn ở layer giữa; cắt nhiều FC hơn attention, nhưng độ chênh nhỏ hơn các phương pháp khác.
 - **Downstream:** hiệu năng zero-shot tương quan tốt với PPL và LLM Surgeon hơn K-OBD (Table 5, 6 ở phụ lục; bản text của Table 5 không nêu rõ mô hình nên ta chỉ dựa vào Table 8 cho 13B).
@@ -171,7 +171,7 @@ Paper kết luận: nhiều tương quan hơn thì tốt hơn, nhất là trên 
 
 ## 8. Ứng dụng cho dự án (suy luận)
 
-- **Liên hệ D_lin / D_res.** Cập nhật $\Delta\theta$ ở Eq. 8 là nghiệm *tối ưu theo xấp xỉ bậc hai của loss thật* (không chỉ lỗi đầu ra layer) trong không gian trọng số còn lại. Do đó phần hại mà cập nhật chung sửa được gần với $D_{lin}$ tính theo loss; chi phí $L_r,L_c$ (Eq. 10) là **hại đã tính *trước* khi bù**, không phải sau bù. Điều này khác ZipLM: điểm chọn của ZipLM là sai số *sau bù* (gần $D_{res}$ cục bộ), còn chi phí của LLM Surgeon cho từng hàng/cột độc lập là sai số đơn lẻ trước khi gộp cập nhật. Nói cách khác, xếp hạng của LLM Surgeon theo $D_{lin}+D_{res}$ (một phần theo loss), rồi bù ($D_{lin}$ theo loss) làm giảm chi phí thực. Đây là diễn giải của ta; paper không dùng ngôn ngữ này.
+- **Liên hệ D_lin / D_res.** Chi phí $\mathcal L$ ở Eq. 7 là *giá trị nhỏ nhất* của bài toán ràng buộc, tức là loss tăng **sau khi** các trọng số còn lại đã được điều chỉnh tối ưu (trong xấp xỉ bậc hai). Vì vậy $L_r,L_c$ tương ứng với phần hại *còn lại sau bù* (kiểu $D_{res}$, nhưng đo theo loss có gradient, và phần bù chỉ dùng các trọng số còn lại của cùng ma trận), còn $\Delta\theta$ (Eq. 8) chính là phép bù tuyến tính tương ứng với $D_{lin}$. Về khái niệm giống điểm sau-bù của ZipLM (25), khác ở chỗ (i) đo bằng loss thật nhờ $G$ chứ không chỉ sai số đầu ra layer, (ii) khi xoá nhiều hàng/cột cùng lúc, chi phí vẫn được cộng độc lập rồi mới tính cập nhật chung, nên xếp hạng bỏ qua tương tác giữa các cấu trúc bị xoá. Đây là diễn giải của ta; paper không dùng ngôn ngữ D_lin/D_res.
 - **Nút thắt phù hợp với quan sát của bạn về MLP.** Bảng 1 cho thấy cắt structured 20 đến 30% cần *cả* gradient lẫn bù tương quan; K-OBD (có curvature nhưng không bù) sụp ở Llama-v2 7B (46.64 PPL ở 50%, 9.14 ở 80%), trong khi bù đầy đủ còn 15.38 và 6.18. Điều này gợi ý rằng "cắt neuron MLP hồi phục kém" có thể bớt kém nếu có bước bù, nhưng cần thử trên mô hình của bạn.
 - **Thực tế triển khai: nặng.** Backprop + KFAC cho mô hình 0.8B nhỏ hơn nhiều so với 7B/13B của paper, nên 1 GPU lớn là đủ (ước lượng của ta, không phải số của paper). Thích hợp để dùng *một lần* để chọn phân bổ sparsity toàn cục (ngưỡng $\tau$) cho từng layer, rồi dùng kết quả như một "bản đồ độ nhạy" thay cho đo thủ công (so Fig. 4). Mô hình có GatedDeltaNet cần tự cài lại việc thu thập $A,G$ cho các projection của nó.
 - **Ngưỡng toàn cục là ý tưởng dùng được ngay** nếu bạn có điểm quan trọng chuẩn hoá được giữa ViT, GatedDeltaNet và full-attention; so với phân bổ theo latency của ZipLM (25), cần chọn một trong hai hoặc kết hợp (chi phí/ms).

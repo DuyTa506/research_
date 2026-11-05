@@ -1,7 +1,7 @@
 # Deep Mutual Learning (2017)
 
 **Tác giả:** Ying Zhang, Tao Xiang, Timothy M. Hospedales, Huchuan Lu.  
-**Venue / arXiv:** arXiv:1706.00384 (v1, 01/06/2017). Bản arXiv được dùng không ghi venue (tên file lộ trình đặt năm 2018 theo năm xuất bản chính thức mà chúng ta biết ngoài paper; ở đây trích dẫn năm theo ngày arXiv).  
+**Venue / arXiv:** arXiv:1706.00384 (v1, 01/06/2017). Bản text đã đọc không ghi tên hội nghị; tiêu đề ghi năm 2017 theo ngày arXiv, còn tên file lộ trình dùng 2018 (năm xuất bản chính thức, thông tin ngoài paper).  
 **Nguồn:** https://arxiv.org/abs/1706.00384  
 **Chủ đề:** Học tương hỗ giữa nhiều mạng học viên (student cohort), không cần teacher huấn luyện trước; mimicry loss bằng KL divergence giữa các peer; giải thích bằng entropy hậu nghiệm cao và cực tiểu phẳng.  
 **Vị trí trong lộ trình:** Đọc trước: 02 (Hinton KD), 06 (Born-again networks: student cùng cỡ vẫn học được từ teacher cùng cỡ). Bài này thêm: bỏ luôn khái niệm teacher huấn luyện trước; các mạng cùng train, cùng dạy lẫn nhau; và cho thấy dạy lẫn nhau còn thắng KD từ teacher mạnh cố định trong các thí nghiệm của họ. Đọc tiếp: 08 (Teacher assistant), 10 (Does KD really work).
