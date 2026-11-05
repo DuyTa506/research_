@@ -23,9 +23,7 @@
 
 ## 1. Động lực: transcoder băm nhỏ tính toán
 
-**Transcoder**: MLP rất rộng và thưa, huấn luyện để thay MLP gốc; neuron của nó là feature. Theo tác giả, transcoder "shatter" (băm vụn) tính toán thành mảnh rất nhỏ, có thể biểu diễn tính toán kém hiệu quả hơn mô hình gốc, và gây **feature splitting** (một khái niệm vỡ thành nhiều feature hẹp) và **absorption** (feature tổng quát bị feature đặc thù "hút" mất một phần).
-
-Ví dụ: phép cộng được phân rã thành lookup table như "6 + 9 = 5 (mod 10)". Đúng ở một nghĩa nào đó, nhưng bỏ lỡ cấu trúc hình học (số được nhúng sao cho phép biến đổi đơn giản tính được phép toán) và cực kỳ tốn kém. Để bắt hết tính toán có thể cần số feature khổng lồ, nhiều tham số hơn chính mô hình gốc.
+**Transcoder**: MLP rất rộng và thưa, huấn luyện để thay MLP gốc; neuron của nó là feature. Theo tác giả, transcoder "shatter" (băm vụn) tính toán thành mảnh rất nhỏ, có thể biểu diễn tính toán kém hiệu quả hơn mô hình gốc, và gây **feature splitting** (một khái niệm vỡ thành nhiều feature hẹp) và **absorption** (feature tổng quát bị feature đặc thù "hút" mất một phần). Ví dụ: phép cộng được phân rã thành lookup table như "6 + 9 = 5 (mod 10)". Đúng ở một nghĩa nào đó, nhưng bỏ lỡ cấu trúc hình học (số được nhúng sao cho phép biến đổi đơn giản tính được phép toán) và cực kỳ tốn kém. Để bắt hết tính toán có thể cần số feature khổng lồ, nhiều tham số hơn chính mô hình gốc.
 
 **Đề xuất:** thay MLP bằng **MOLT**. Không học feature (hướng trong không gian activation) mà học **transform** hoạt động thưa: mỗi transform là một phép biến đổi tuyến tính áp lên residual stream. Transform là đối tượng *thuần tính toán*, "bắc cầu" biểu diễn giữa các layer, nên phải dùng kèm một phương pháp phân rã biểu diễn như SAE.
 
@@ -37,17 +35,14 @@ $$
 \boxed{\;f(\mathbf x)=\sum_t \phi(\mathbf e_t\cdot\mathbf x-b_t)\,\big(U_tV_t\,\mathbf x\big)\;}
 $$
 
-- $\mathbf x$: residual stream đầu vào.
-- $\mathbf e_t, b_t$: encoder và bias của transform $t$, quyết định transform bật hay không và bật mạnh cỡ nào; $\phi$ là ReLU hoặc JumpReLU.
+- $\mathbf x$: residual stream đầu vào; $\mathbf e_t, b_t$: encoder và bias của transform $t$, quyết định transform bật hay không và bật mạnh cỡ nào; $\phi$ là ReLU hoặc JumpReLU.
 - $U_t\in\mathbb R^{d_{model}\times k_t}$, $V_t\in\mathbb R^{k_t\times d_{model}}$: $U_tV_t$ có hạng $k_t$; các transform có thể có hạng khác nhau (phân bố hạng là siêu tham số).
 
 Huấn luyện bắt chước output MLP (như transcoder), với sparsity penalty (L1 hoặc tanh) trên activation transform, nhân với chuẩn Frobenius:
 
 $$
-\mathcal L_{\text{sparse}}=\sum_t \|U_tV_t\|_F\cdot\phi(\mathbf e_t\cdot\mathbf x-b_t),
+\mathcal L_{\text{sparse}}=\sum_t \|U_tV_t\|_F\cdot\phi(\mathbf e_t\cdot\mathbf x-b_t)\quad\text{(tương tự nhân penalty với chuẩn decoder ở transcoder).}
 $$
-
-tương tự cách transcoder nhân penalty với chuẩn decoder.
 
 **So sánh với transcoder:**
 
@@ -70,15 +65,11 @@ $$
 
 với $D_S$ là ma trận đường chéo chọn neuron trong $S$ (công thức của chúng tôi, mô tả đúng lập luận bằng lời của bài). Mỗi mẫu kích hoạt neuron tương ứng một transform tuyến tính, gần giống một transform của MOLT.
 
-**(b) Khai thác hình học.** Nếu chữ số 0–9 nằm trên một vòng tròn, một transform hạng 2 "plus 3" có thể là phép **quay**: biến feature "1" thành "say 4", "2" thành "say 5", ... Encoder của nó bật khi ngữ cảnh có "+3" hoặc "add three". Một transform thay cho cả họ lookup table.
-
-Bài gốc mô tả đây là phép quay "8/10 vòng"; con số cụ thể phụ thuộc cách sắp chữ số trên vòng tròn. Ví dụ nhỏ dưới đây (minh họa của chúng tôi) dùng cách sắp đều đơn giản nhất: đặt chữ số $n$ tại góc $\theta_n=2\pi n/10$, vector $(\cos\theta_n,\sin\theta_n)$. Transform "plus 3" là ma trận quay $R(2\pi\cdot 3/10)$, áp cho mọi $n$:
+**(b) Khai thác hình học.** Nếu chữ số 0–9 nằm trên một vòng tròn, một transform hạng 2 "plus 3" có thể là phép **quay**: biến feature "1" thành "say 4", "2" thành "say 5", ... Encoder của nó bật khi ngữ cảnh có "+3" hoặc "add three". Một transform thay cho cả họ lookup table. Bài gốc mô tả đây là phép quay "8/10 vòng"; con số cụ thể phụ thuộc cách sắp chữ số trên vòng tròn. Ví dụ nhỏ dưới đây (minh họa của chúng tôi) dùng cách sắp đều đơn giản nhất: đặt chữ số $n$ tại góc $\theta_n=2\pi n/10$, vector $(\cos\theta_n,\sin\theta_n)$. Transform "plus 3" là ma trận quay $R(2\pi\cdot 3/10)$, áp cho mọi $n$:
 
 $$
 R\!\left(\tfrac{6\pi}{10}\right)\begin{pmatrix}\cos\theta_n\\ \sin\theta_n\end{pmatrix}=\begin{pmatrix}\cos\theta_{n+3}\\ \sin\theta_{n+3}\end{pmatrix}.
 $$
-
-Theo cách nhìn lookup table, transcoder cần cỡ một feature cho mỗi cặp (chữ số, +3) để làm cùng việc.
 
 **(c) Tham số hóa tổ hợp.** 1 triệu feature ở input layer $L$ và 1 triệu transform ở MLP layer $L$ mô tả hiệu dụng $10^{12}$ **pseudofeature** ở layer $L+1$ (cặp feature, transform: bật khi cả hai bật, hướng là transform áp lên decoder của feature). Chuỗi nhiều transform cho số pseudofeature tăng theo hàm mũ.
 
@@ -88,11 +79,7 @@ Theo cách nhìn lookup table, transcoder cần cỡ một feature cho mỗi c�
 
 ### 4.1 Phân bố hạng tối ưu
 
-Trên Claude 3.5 Haiku, tốt nhất (trên Pareto MSE/L0) là phân bố hạng từ 32 đến 512:
-
-| Hạng $k$ | 512 | 256 | 128 | 64 | 32 |
-|---|---|---|---|---|---|
-| Số transform | $N$ | $2N$ | $4N$ | $8N$ | $16N$ |
+Trên Claude 3.5 Haiku, tốt nhất (trên Pareto MSE/L0) là phân bố hạng từ 32 đến 512: $N$ transform hạng 512, $2N$ hạng 256, $4N$ hạng 128, $8N$ hạng 64, $16N$ hạng 32 (tăng $N$ để scale, giữ tỉ lệ).
 
 Nhận xét của chúng tôi: mỗi transform hạng $k$ tốn $2kd_{model}$ tham số, nên **mỗi tầng hạng nhận cùng tổng tham số** ($512N\cdot 2d_{model}$). Tác giả cho biết hạng thay đổi tốt hơn hạng đồng nhất khi cùng tổng tham số.
 
@@ -100,9 +87,7 @@ Nhận xét của chúng tôi: mỗi transform hạng $k$ tốn $2kd_{model}$ th
 
 Huấn luyện trên layer giữa của Haiku, cùng số tham số, số bước tỉ lệ với số feature (mỗi 4× FLOPs = 2× tham số và 2× bước). Transcoder lớn nhất ("1024x FLOPs") có khoảng 10 triệu feature.
 
-- Tại cùng L0, MSE của MOLT **thấp hơn đáng kể**.
-- MOLT nhỏ nhất **Pareto-dominate** transcoder dùng **1024× FLOPs**.
-- Transcoder có vẻ **bão hòa** ở quy mô lớn (có thể do tuning kém); MOLT chưa thấy bão hòa.
+Kết quả: tại cùng L0, MSE của MOLT **thấp hơn đáng kể**; MOLT nhỏ nhất **Pareto-dominate** transcoder dùng **1024× FLOPs**; transcoder có vẻ **bão hòa** ở quy mô lớn (có thể do tuning kém), MOLT chưa thấy bão hòa.
 
 ### 4.3 Faithfulness cơ chế qua Jacobian
 
@@ -112,15 +97,11 @@ $$
 \rho=\mathbb E_{\mathbf x}\Big[\cos\big(\operatorname{vec}J_{\text{replace}}(\mathbf x),\ \operatorname{vec}J_{\text{MLP}}(\mathbf x)\big)\Big].
 $$
 
-- MOLT có Jacobian correlation **cao hơn đáng kể** tại cùng L0.
-- Faithfulness của transcoder **giảm khi scale**, của MOLT ổn định hơn.
-- Lý giải: Jacobian của transcoder có hạng $\le L_0$, còn MOLT có thể có hạng lớn hơn nhiều. (Kết quả Jacobian này trên mô hình 18 layer của *Circuit Tracing*, chưa làm trên Haiku.)
+MOLT có Jacobian correlation **cao hơn đáng kể** tại cùng L0; faithfulness của transcoder **giảm khi scale**, của MOLT ổn định hơn. Lý giải: Jacobian của transcoder có hạng $\le L_0$, còn MOLT có thể có hạng lớn hơn nhiều. (Kết quả Jacobian này trên mô hình 18 layer của *Circuit Tracing*, chưa làm trên Haiku.)
 
 ### 4.4 Diễn giải transform
 
-- **Điều kiện bật** dễ hiểu tương tự feature: layer sớm chọn thông tin token, layer giữa/muộn chọn ngữ cảnh trừu tượng.
-- Transform hạng cao bật thường hơn, nhưng vẫn dễ hiểu (ví dụ một transform bật trên dấu chấm, một transform bật trên văn bản tiếng Tây Ban Nha).
-- **Chức năng** khó diễn giải hơn: tính $\mathbf e_t\,UV\,\mathbf d_s$ giữa feature SAE trước và sau cho kết quả khó đọc, có lẽ do **interference weights** (xem note số 23, 24).
+**Điều kiện bật** dễ hiểu tương tự feature: layer sớm chọn thông tin token, layer giữa/muộn chọn ngữ cảnh trừu tượng. Transform hạng cao bật thường hơn nhưng vẫn dễ hiểu (một transform bật trên dấu chấm, một transform trên văn bản tiếng Tây Ban Nha). **Chức năng** khó diễn giải hơn: tính $\mathbf e_t\,UV\,\mathbf d_s$ giữa feature SAE trước và sau cho kết quả khó đọc, có lẽ do **interference weights** (xem note số 23, 24).
 
 ---
 
@@ -132,9 +113,7 @@ Transform không có hướng decoder cố định, nên dùng chiến lược k
 2. Phân rã attribution giữa feature nguồn $i$ và đích $j$ thành:
    - Qua transform: $\mathbf e_j\,U V\,\mathbf d_i\cdot(a_i a_t)$.
    - Qua attention head: $\mathbf e_j\,OV\,\mathbf d_i\cdot(a_i\,a_h(q,k))$.
-3. Gắn mỗi cạnh với danh sách transform và head mang nó mạnh nhất. Transform cũng có cạnh vào (đích là encoder $\mathbf e_t$).
-
-Nói cách khác: **transform là "attention head của MLP"**, đơn vị mang cạnh.
+3. Gắn mỗi cạnh với danh sách transform và head mang nó mạnh nhất. Transform cũng có cạnh vào (đích là encoder $\mathbf e_t$). Nói cách khác: **transform là "attention head của MLP"**, đơn vị mang cạnh.
 
 **Ví dụ:**
 - `The Spanish word for hot is "calor"`: "say a word beginning with 'cal'" nhận đầu vào từ "hot" qua một transform bật trong ngữ cảnh tiếng Tây Ban Nha, và đồng thời từ "Spanish" qua transform bật trong ngữ cảnh "hot".
@@ -145,8 +124,7 @@ Nói cách khác: **transform là "attention head của MLP"**, đơn vị mang 
 
 ## 6. Giới hạn và công trình liên quan
 
-- Kết quả sơ bộ, chưa chứng minh MOLT luôn tốt hơn transcoder; đồ thị có transform cồng kềnh hơn.
-- Chức năng transform khó đọc ngoài ngữ cảnh đồ thị.
+- Kết quả sơ bộ, chưa chứng minh MOLT luôn tốt hơn transcoder; đồ thị có transform cồng kềnh hơn; chức năng transform khó đọc ngoài ngữ cảnh đồ thị.
 - Ý tưởng chưa thử: dùng transform để giải thích **sai số tái tạo của SAE**. Sai số ở layer $L+1$ có thể viết lại thành tổng các cặp (feature, transform) của layer trước; có thể là khái niệm quá hiếm để SAE học được, nhưng ghép từ feature và transform phổ biến.
 - **Mixture of Decoders** (MxD, Oldfield et al.): rất giống; transform full-rank nhưng chia sẻ tham số (cột $h$ của $U_t$ là $\mathbf d_h\ast\mathbf c_t$). MOLT dùng low-rank. Tác giả nghi low-rank khuyến khích transform có vai trò hẹp, dễ hiểu hơn, nhưng chưa so sánh.
 - **Skip transcoder**: transcoder + một phép tuyến tính. MOLT khác ở chỗ transform bật có điều kiện và thưa, không full-rank, có nhiều transform, không có feature transcoder thường.
@@ -163,11 +141,9 @@ Nói cách khác: **transform là "attention head của MLP"**, đơn vị mang 
 $$
 \hat r(\mathbf x)=W\mathbf x+\sum_{t=1}^{T}\phi(\mathbf e_t\cdot\mathbf x-b_t)\,U_tV_t\mathbf x
 $$
-với $T$ nhỏ và hạng thấp. Đây là "D_lin có điều kiện". Chi phí thêm nhỏ nếu $T\cdot k$ nhỏ so với MLP bị cắt. Lưu ý: nếu LightOnOCR dùng SwiGLU (cổng mềm), lập luận "cố định tập neuron hoạt động" chỉ là xấp xỉ.
+với $T$ nhỏ và hạng thấp. Đây là "D_lin có điều kiện". Chi phí thêm nhỏ nếu $T\cdot k$ nhỏ so với MLP bị cắt. Lưu ý: nếu LightOnOCR dùng SwiGLU (cổng mềm), lập luận "cố định tập neuron hoạt động" chỉ là xấp xỉ. Về phân bố hạng: kết quả "nhiều transform hạng thấp, ít hạng cao, mỗi tầng cùng ngân sách" là prior hữu ích khi phân rã low-rank theo cụm ngữ cảnh; không nên dùng một hạng chung.
 
 **7.3 Faithfulness qua Jacobian cho KD.** Hidden-state KD thường so output. Jacobian correlation là thước đo bổ sung: student có thể khớp MSE nhưng phản ứng với nhiễu khác teacher, và đó có thể là dấu hiệu của tổng quát hóa kém trên ảnh lạ (font lạ, nhiễu scan). Đo $\rho$ giữa block của student và block teacher tương ứng (qua projector nếu khác chiều).
-
-**7.4 Phân bố hạng cho low-rank compression.** Kết quả "nhiều transform hạng thấp, ít transform hạng cao, mỗi tầng cùng ngân sách" là một prior hữu ích khi phân rã low-rank MLP theo cụm ngữ cảnh: không nên dùng một hạng chung.
 
 ---
 
@@ -175,9 +151,7 @@ với $T$ nhỏ và hạng thấp. Đây là "D_lin có điều kiện". Chi ph�
 
 **Thí nghiệm 1 — D_res có "tuyến tính từng mảnh" không?** Sau khi cắt 50% neuron một MLP của teacher, fit (a) một map tuyến tính toàn cục, (b) MOLT-lite với $T\in\{4,16,64\}$ transform hạng 16–64 (cùng tổng tham số tăng dần). Vẽ phần dư còn lại theo $T$. Nếu giảm nhanh, D_res chủ yếu là "tuyến tính có điều kiện" và có thể phục hồi rẻ.
 
-**Thí nghiệm 2 — Đếm mẫu kích hoạt.** Trên dữ liệu OCR, ghi mẫu nhị phân của neuron có $|\text{activation}|$ lớn nhất ở một MLP, phân cụm (ví dụ theo Jaccard). Số cụm hiệu dụng và hạng của $W_{out}D_SW_{in}$ trong từng cụm cho biết MLP này là hỗn hợp của bao nhiêu phép tuyến tính, và bao nhiêu chiều mỗi phép.
-
-**Thí nghiệm 3 — Jacobian correlation của student.** Với các block được giữ lại sau pruning + KD, tính $\rho$ so với teacher trên ảnh in-distribution và out-of-distribution (font viết tay, ảnh chụp nghiêng). So sánh mức giảm $\rho$ với mức tăng CER ngoài phân phối.
+**Thí nghiệm 2 — Jacobian correlation của student.** Với các block được giữ lại sau pruning + KD, tính $\rho$ so với teacher trên ảnh in-distribution và out-of-distribution (font viết tay, ảnh chụp nghiêng). So sánh mức giảm $\rho$ với mức tăng CER ngoài phân phối.
 
 ---
 
