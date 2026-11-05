@@ -121,13 +121,13 @@ Hai filter A, B, mỗi filter 2 trọng số. A: $g=(0.1,-0.1)$, $w=(1,1)$ nên 
 
 Spearman tương quan với oracle, cột "All layers":
 
-| Mạng | Gate after BN (Taylor FO) | Conv weight | BN scale | Weight magnitude | Taylor-output |
+| Mạng | Gate after BN (Taylor FO) | Taylor FO trên trọng số conv/linear | BN scale (|γ|, cách cũ) | Weight magnitude | Taylor-output (2017) |
 |---|---|---|---|---|---|
-| ResNet-101 | 0.965 | 0.874 | 0.866 (BN scale có áp dụng cổng đặt khác nhau: 0.807 không dùng) | 0.587 | 0.287 |
-| VGG11-BN | 0.999 | 0.983 | 0.968 | 0.812 | 0.968 |
-| DenseNet-201 | 0.932 | 0.817 | 0.434 | 0.300 | 0.472 |
+| ResNet-101 | 0.965 | 0.874 | 0.807 | 0.587 | 0.287 |
+| VGG11-BN | 0.999 | 0.983 | 0.257 | 0.812 | 0.968 |
+| DenseNet-201 | 0.932 | 0.817 | 0.597 | 0.300 | 0.472 |
 
-(Bảng PDF bị lệch dòng; cột BN scale ResNet-101 có hai dòng, tôi ghi cả hai giá trị 0.866/0.807 theo thứ tự xuất hiện. Phải coi là gần đúng.) Văn bản: phương pháp đạt >93% Spearman trên cả ba mạng; Pearson >92% trên ResNet và DenseNet. Taylor-output tốt trên VGG nhưng thất bại với ResNet/DenseNet. Thêm cổng cho skip connection vẫn tương quan cao (ResNet-101: 0.946).
+(Bảng PDF bị lệch dòng và còn các biến thể khác như "full gradient", "BN scale" có áp dụng phương pháp của tác giả; tôi chỉ giữ các cột đọc được chắc chắn, coi là gần đúng.) Văn bản: phương pháp đạt >93% Spearman trên cả ba mạng; Pearson >92% trên ResNet và DenseNet. Taylor-output tốt trên VGG nhưng thất bại với ResNet/DenseNet. Thêm cổng cho skip connection vẫn tương quan cao (ResNet-101: 0.946).
 
 ### 4.3 ImageNet: cắt và fine-tune (Table 3, 1-crop top-1 error)
 
