@@ -1,12 +1,12 @@
 # Transformers are SSMs: Generalized Models and Efficient Algorithms Through Structured State Space Duality (2024)
 
 **Tác giả:** Tri Dao, Albert Gu.  
-**Venue / arXiv:** arXiv:2405.21060 (31/5/2024); ICML 2024 (Gu & Dao trích dẫn là PMLR 235). Code: github.com/state-spaces/mamba.  
+**Venue / arXiv:** arXiv:2405.21060 (31/5/2024); ICML 2024 (theo cách bài 24 trích dẫn: PMLR 235). Code: github.com/state-spaces/mamba.  
 **Nguồn:** https://arxiv.org/abs/2405.21060  
 **Chủ đề:** State space model (SSM), ma trận semiseparable, structured masked attention, "state space duality" (SSD), thuật toán SSD theo khối, kiến trúc Mamba-2, mô hình lai SSM + attention.  
 **Vị trí trong lộ trình:** Đọc trước: 18 (Linear Transformers), 19 (RetNet), 21 (Mamba). Bài này **thống nhất** cách nhìn SSM và attention; cho thuật toán chunkwise (khối) mà GDN (24) kế thừa. Đọc tiếp: 23 (DeltaNet song song), 24 (Gated DeltaNet), 25 (Jamba).
 
-> Bài rất dài (khoảng 28 nghìn từ, có nhiều phụ lục về hệ thống song song và chứng minh). Ghi chú này tập trung vào **lý thuyết cốt lõi, thuật toán SSD và kiến trúc Mamba-2** theo hướng dễ tiếp cận, bỏ qua phần chứng minh chi tiết, tensor/sequence parallelism, và phụ lục các thuật toán 1-SS. Đây là tài liệu học tập, không phải bản dịch; "Ứng dụng cho dự án" là suy luận của chúng tôi. Phép kiểm tra "dạng đối ngẫu = dạng hồi quy" ở mục 3.4 do chúng tôi chạy bằng số.
+> Bài rất dài (khoảng 28 nghìn từ, có nhiều phụ lục về hệ thống song song và chứng minh). Ghi chú này tập trung vào **lý thuyết cốt lõi, thuật toán SSD và kiến trúc Mamba-2** theo hướng dễ tiếp cận, bỏ qua phần chứng minh chi tiết, tensor/sequence parallelism, và phụ lục các thuật toán 1-SS. Đây là tài liệu học tập, không phải bản dịch; "Ứng dụng cho dự án" là suy luận của chúng tôi. Phép kiểm tra "dạng đối ngẫu = dạng hồi quy" ở mục 3.4 và pseudo-code SSD ở mục 3.5 do chúng tôi chạy bằng số (numpy) và khớp.
 
 ## Mục lục
 
@@ -77,11 +77,11 @@ Vậy $y=Mx$ với (Eq. 3)
 
 $$\boxed{M_{ji}=C_j^\top A_j\cdots A_{i+1}B_i\quad(j\ge i),\qquad M_{ji}=0\ (j<i).}$$
 
-**Semiseparable.** Một ma trận tam giác dưới là *$N$-semiseparable* nếu mọi ma trận con nằm trên hoặc dưới đường chéo (hình chữ nhật chỉ chứa phần tam giác dưới) có hạng $\le N$. Lý do $M$ thoả: ma trận con hàng $j\in[a,b)$, cột $i\in[c,d)$ với $c<d\le a$ phân rã được thành tích ba phần
+**Semiseparable.** Một ma trận tam giác dưới là *$N$-semiseparable* nếu mọi ma trận con nằm hoàn toàn trên hoặc dưới đường chéo có hạng $\le N$. Lý do $M$ thoả: lấy hàng $j\in[a,b)$, cột $i\in[c,d)$ với $d\le a$ (khối nằm hẳn dưới đường chéo). Với mọi $j\ge a\ge d>i$ ta có $A_j\cdots A_{i+1}=(A_j\cdots A_d)(A_{d-1}\cdots A_{i+1})$, nên
 
-$$M_{[a:b],[c:d]}=\underbrace{\begin{pmatrix}C_a^\top A_{a:d-1}\\ \vdots\\ C_{b-1}^\top A_{b-1:d-1}\end{pmatrix}}_{\text{trái (b-a)}\times N}\;\underbrace{A_{d-1:d-1}}_{\text{giữa}}\;\underbrace{\big(A_{d-1:c}B_c\ \cdots\ B_{d-1}\big)}_{\text{phải }N\times(d-c)}$$
+$$M_{ji}=\underbrace{\big(C_j^\top A_j\cdots A_d\big)}_{1\times N}\;\underbrace{\big(A_{d-1}\cdots A_{i+1}B_i\big)}_{N\times1},$$
 
-chen qua chiều $N$, nên hạng $\le N$ (Lemma 3.3). Ngược lại mọi ma trận $N$-semiseparable có biểu diễn như vậy (Proposition 3.4). Hiểu trực quan: **thông tin từ quá khứ xa tới hiện tại đi qua "cổ chai" state $N$ chiều**, nên khối ngoài đường chéo có hạng thấp.
+tức khối con là tích của ma trận $(b-a)\times N$ và ma trận $N\times(d-c)$, hạng $\le N$ (Lemma 3.3). Ngược lại mọi ma trận $N$-semiseparable có biểu diễn như vậy (Proposition 3.4). Hiểu trực quan: **thông tin từ quá khứ xa tới hiện tại đi qua "cổ chai" state $N$ chiều**, nên khối ngoài đường chéo có hạng thấp. Khi chia lưới khối (mục 3.5), phân rã này có ba nhân tử: *trái* ($C$), *giữa* ($A$ qua ranh giới khối), *phải* ($B$).
 
 **Trường hợp 1-semiseparable (state vô hướng $N=1$, bỏ $B,C$):**
 $$L=\mathrm{1SS}(a)=\begin{pmatrix}1\\a_1&1\\a_2a_1&a_2&1\\\vdots&&&\ddots\end{pmatrix},\qquad L_{ji}=a_j\cdots a_{i+1}.$$
@@ -166,7 +166,7 @@ Từ SSD, thiết kế khối (Hình 6):
 - **SSD là hàm của $(A,X,B,C)$ cùng lúc.** Mamba-1 sinh $B,C,\Delta$ *từ* $X$ sau một phép chiếu (tuần tự). Mamba-2 sinh $A,X,B,C$ **song song** từ đầu vào bằng một phép chiếu lớn, giống $Q,K,V$ trong Transformer: bớt tham số, và hợp với **tensor parallelism** kiểu Megatron (giảm một nửa số điểm đồng bộ mỗi khối).
 - **Thêm normalization** (như NormFormer) ngay trước phép chiếu đầu ra, giúp ổn định ở mô hình lớn (giống thêm GroupNorm/LayerNorm sau linear attention ở TransNormer/RetNet).
 - **Head dimension $P=64$ hoặc $128$** (Mamba-1 chỉ $P=1$): làm cho các phép nhân ma trận đủ lớn để tận dụng tensor core. $N$ (state) thường 64-256, lớn hơn nhiều so với Mamba-1 ($N=16$) vì SSD không chậm đi khi tăng $N$.
-- **Các mẫu "đa đầu"** tương đương attention (Bảng 17-20): *multi-head* (MHA), *multi-contract* (≈ MQA, bài 14: chia sẻ $B$ và $X$, riêng $C$ mỗi head), *multi-expand* (≈ multi-key), *multi-input* (≈ **multi-value attention, MVA**: chia sẻ $B,C$ qua các head, $X$ riêng mỗi head). Mamba-1 hoá ra là MVA; Mamba-2 dùng MVA, mở rộng thành **grouped-value** (GVA, tương tự GQA bài 15) để chia theo nhóm cho tensor parallel.
+- **Các mẫu "đa đầu"** tương đương attention (Eq. 17-20): *multi-head* (MHA), *multi-contract* (≈ MQA, bài 14: chia sẻ $B$ và $X$, riêng $C$ mỗi head), *multi-expand* (≈ multi-key), *multi-input* (≈ **multi-value attention, MVA**: chia sẻ $B,C$ qua các head, $X$ riêng mỗi head). Mamba-1 hoá ra là MVA; Mamba-2 dùng MVA, mở rộng thành **grouped-value** (GVA, tương tự GQA bài 15) để chia theo nhóm cho tensor parallel.
 - **Hàm kernel/feature map $\psi$** áp lên nhánh $B,C$ (≈ $K,Q$): mặc định SiLU/Swish; thử các kernel của linear attention và Performer đều không tốt hơn (mục 5).
 
 ### 3.7 Chi phí
