@@ -359,7 +359,7 @@ Quan sát của bạn là cắt neuron ít phục hồi được hơn cắt laye
 
 ### 9.4 Hidden-state KD theo J-space
 
-- Hidden-state MSE coi mọi chiều như nhau, nên >90% variance nằm ngoài J-space sẽ chi phối loss. Một biến thể: thêm số hạng khớp **tọa độ J-lens**, $\mathcal L_J=\sum_\ell\|P_J(W_UJ_\ell^T h^T_\ell)-P_J(W_UJ_\ell^T \tilde h^S_\ell)\|^2$, trên top-k token của teacher. Ở đây $\tilde h^S$ là hidden state của student sau projector, và $J^T$ là lens của teacher.
+- Hidden-state MSE coi mọi chiều như nhau, nên >90% variance nằm ngoài J-space sẽ chi phối loss. Một biến thể: thêm số hạng khớp **tọa độ J-lens**, $\mathcal L_J=\sum_{\ell\in\text{workspace}}\sum_{u\in\text{top-}k(h^T_\ell)}\big(\langle v^{\text{tea}}_{\ell,u},h^T_\ell\rangle-\langle v^{\text{tea}}_{\ell,u},\tilde h^S_\ell\rangle\big)^2$. Ở đây $v^{\text{tea}}_{\ell,u}$ là J-lens vector của teacher cho token $u$, top-$k$ lấy từ sparse decomposition của teacher, và $\tilde h^S$ là hidden state của student sau projector.
 - Cách rẻ hơn: KD trên phân phối $\operatorname{lens}(h_\ell)$ của teacher ở các layer workspace, tương tự KD logit nhưng ở layer giữa. Lens của teacher được tính một lần và đóng băng.
 - Rủi ro: student nhỏ có thể không có workspace tương đương. Paper ghi nhận Haiku 4.5 mất coherence trước khi có hiệu ứng ablation định tính, và directed modulation tăng theo kích thước model. Cần đo J-space của student trước khi ép.
 
