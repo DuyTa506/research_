@@ -96,7 +96,7 @@ Một vòng cắt + retrain = một lần lặp, mỗi lần là tìm kiếm tha
 
 ### 3.6 Cắt neuron là hệ quả tự nhiên
 
-Sau khi cắt kết nối, neuron không còn kết nối vào hoặc ra có thể bỏ; retrain tự dẫn đến neuron "chết" có cả hai phía bằng 0, nhờ gradient bằng 0 và regularization kéo trọng số còn lại về 0. Đây là cách duy nhất mà phương pháp này đạt được cấu trúc, và nó **ngẫu nhiên**, không được điều khiển.
+Sau khi cắt kết nối, neuron không còn kết nối vào hoặc ra có thể bỏ; retrain tự dẫn đến neuron "chết" có cả hai phía bằng 0, nhờ gradient bằng 0 và regularization kéo trọng số còn lại về 0. Theo chúng ta, đây là cách duy nhất phương pháp này có được cấu trúc, và nó không được điều khiển chủ động (nhận xét của ghi chú, không phải của paper).
 
 ### 3.7 Độ nhạy theo tầng
 

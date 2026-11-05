@@ -1,7 +1,7 @@
 # Decoupled Knowledge Distillation (2022)
 
 **Tác giả:** Borui Zhao, Quan Cui, Renjie Song, Yiyu Qiu, Jiajun Liang (MEGVII Technology, Waseda University, Tsinghua University).  
-**Venue / arXiv:** arXiv:2203.08679 (v2, 12/7/2022). Bản text không ghi tên hội nghị.  
+**Venue / arXiv:** arXiv:2203.08679 (v2, 12/7/2022); CVPR 2022 (theo ghi chú trên trang arXiv, bản text không ghi).  
 **Nguồn:** https://arxiv.org/abs/2203.08679  
 **Chủ đề:** Phân rã loss KD của Hinton thành TCKD (lớp đích) và NCKD (các lớp không phải đích); chỉ ra KD cổ điển "ghép cặp" (coupled) làm NCKD bị nén; đề xuất DKD với hai trọng số $\alpha,\beta$ độc lập.  
 **Vị trí trong lộ trình:** Đọc sau 02 (Hinton KD), 12 (RKD), 13 (CRD), trước 15 (sequence-level KD). Bài này trả lời vì sao KD trên logit đôi khi "kém" feature-distillation và sửa đúng điểm yếu đó chỉ bằng đổi trọng số. Về sau 31 (Rethinking KL) và 30 (DistiLLM) tiếp tục phân tích dạng loss.

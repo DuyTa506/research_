@@ -1,7 +1,7 @@
 # Relational Knowledge Distillation (2019)
 
 **Tác giả:** Wonpyo Park, Dongju Kim, Yan Lu, Minsu Cho (POSTECH, Microsoft Research).  
-**Venue / arXiv:** arXiv:1904.05068 [cs.CV], v2 (1/5/2019). Bản text không ghi tên hội nghị.  
+**Venue / arXiv:** arXiv:1904.05068 [cs.CV], v2 (1/5/2019); CVPR 2019 (theo ghi chú trên trang arXiv, bản text không ghi).  
 **Nguồn:** https://arxiv.org/abs/1904.05068  
 **Chủ đề:** Knowledge distillation dựa trên *quan hệ giữa các mẫu* (khoảng cách, góc) thay vì khớp từng đầu ra riêng lẻ; metric learning, phân loại, few-shot.  
 **Vị trí trong lộ trình:** Đọc sau 02 (Hinton KD), 03 (FitNets), 04 (Attention transfer), 05 (survey). Bài này đổi câu hỏi "tri thức là gì" từ *đầu ra của từng mẫu* sang *cấu trúc quan hệ giữa các mẫu*. Bài kế tiếp: 13 (CRD) cũng dùng thông tin giữa các mẫu nhưng bằng contrastive loss.
