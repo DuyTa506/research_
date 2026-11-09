@@ -11,15 +11,17 @@ Và, nhấn mạnh lại, đây là ghi chú học tập chứ không phải b�
 
 | Cuốn                                                              | Nội dung                                                                                                                                                                    | Số bài | Số trang |
 | ----------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ | -------- |
-| [Toán cho AI](books/math.pdf)                                     | Nhắc lại phần toán nên học / đọc để hỗ trợ việc đào sâu hơn vào AI, bạn không cần phải nhớ tất cả, cốt lõi là nắm được big pictures trước khi đi vào sâu hơn .              | 35     | 301      |
-| [ML/AI cơ bản](books/mlbasics.pdf)                                | Từ hồi quy, mạng nơ-ron, CNN, RNN đến GAN, VAE, diffusion và các ý tưởng nền tảng của deep learning                                                                         | 40     | 323      |
-| [Tối ưu hoá, optimizer và hyperparameter](books/optimization.pdf) | Từ lí thuyết tối ưu hóa cho đến các thuật toán tối ưu thường thấy trong các paper AI : SGD, Adam, AdamW đến Muon, learning rate schedule, batch size, normalization, tuning | 51     | 416      |
+| [Toán cho AI](books/math.pdf)                                     | Nhắc lại phần toán nên học / đọc để hỗ trợ việc đào sâu hơn vào AI, bạn không cần phải nhớ tất cả, cốt lõi là nắm được big pictures trước khi đi vào sâu hơn .              | 35     | 452      |
+| [ML/AI cơ bản](books/mlbasics.pdf)                                | Từ hồi quy, mạng nơ-ron, CNN, RNN đến GAN, VAE, diffusion và các ý tưởng nền tảng của deep learning                                                                         | 40     | 399      |
+| [Tối ưu hoá, optimizer và hyperparameter](books/optimization.pdf) | Từ lí thuyết tối ưu hóa cho đến các thuật toán tối ưu thường thấy trong các paper AI : SGD, Adam, AdamW đến Muon, learning rate schedule, batch size, normalization, tuning | 51     | 523      |
 | [LLM, attention, VLM và inference](books/llm.pdf)                 | Bắt đầu đi sâu hơn vào AI hiện đại : Transformer, các biến thể attention, scaling, tăng tốc suy luận, mô hình thị giác ngôn ngữ                                             | 73     | 517      |
 | [Reinforcement learning](books/rl.pdf)                            | Từ nền tảng (Bellman, Q-learning, policy gradient) đến deep RL, PPO và các hướng RL cho mô hình ngôn ngữ                                                                    | 57     | 435      |
 | [Knowledge distillation](books/distillation.pdf)                  | Chưng cất tri thức từ ý tưởng gốc đến distillation cho LLM và mô hình thị giác ngôn ngữ                                                                                     | 47     | 272      |
 | [Pruning](books/pruning.pdf)                                      | Cắt tỉa mạng: có cấu trúc và không cấu trúc, khi nào mất chất lượng, phục hồi thế nào                                                                                       | 49     | 305      |
 | [Mechanistic interpretability](books/interp.pdf)                  | Một góc nhìn mới mẻ và thú vị hơn cho việc giải thích cơ chế hoạt động bên trong của một mô hình AI                                                                         | 36     | 278      |
 
+
+Ba cuốn Toán, ML/AI cơ bản và Tối ưu hoá nay có lần lượt 14, 8 và 8 chương nền tảng trước các bài paper. Cột "Số bài" vẫn đếm ghi chú paper.
 
 ## Nên đọc thế nào
 
