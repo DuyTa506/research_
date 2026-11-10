@@ -6,7 +6,7 @@ Hey guys, đây là một số takenote của tôi trong lộ trình học AI, t
 
 Và, nhấn mạnh lại, đây là ghi chú học tập chứ không phải bản dịch. Nếu bạn cần con số hay phát biểu chính xác, hãy mở paper gốc, link nằm ở cuối mỗi bài.
 
-## Tám cuốn hiện có
+## Chín cuốn hiện có
 
 
 | Cuốn                                                              | Nội dung                                                                                                                                                                    | Số bài | Số trang |
@@ -19,13 +19,14 @@ Và, nhấn mạnh lại, đây là ghi chú học tập chứ không phải b�
 | [Knowledge distillation](books/distillation.pdf)                  | Chưng cất tri thức từ ý tưởng gốc đến distillation cho LLM và mô hình thị giác ngôn ngữ                                                                                     | 47     | 272      |
 | [Pruning](books/pruning.pdf)                                      | Cắt tỉa mạng: có cấu trúc và không cấu trúc, khi nào mất chất lượng, phục hồi thế nào                                                                                       | 49     | 305      |
 | [Mechanistic interpretability](books/interp.pdf)                  | Một góc nhìn mới mẻ và thú vị hơn cho việc giải thích cơ chế hoạt động bên trong của một mô hình AI                                                                         | 36     | 278      |
+| [Agent, RAG và tầng ứng dụng](books/agentic.pdf)                  | Tầng ứng dụng của LLM: lập luận nhiều bước, RAG, tool và MCP, vòng lặp agent và harness, bộ nhớ, hệ đa agent, agent lập trình, cách đánh giá và bảo mật agent, rồi tự động tối ưu và tự cải thiện đệ quy | 59     | 880      |
 
 
-Ba cuốn Toán, ML/AI cơ bản và Tối ưu hoá nay có lần lượt 14, 8 và 8 chương nền tảng trước các bài paper. Cột "Số bài" vẫn đếm ghi chú paper.
+Ba cuốn Toán, ML/AI cơ bản và Tối ưu hoá nay có lần lượt 14, 8 và 8 chương nền tảng trước các bài paper. Cuốn Agent, RAG có 7 chương nền trước các bài paper. Cột "Số bài" vẫn đếm ghi chú paper.
 
 ## Nên đọc thế nào
 
-Mỗi cuốn mở đầu bằng một bài dẫn nhập: cần biết gì trước, nên đọc theo thứ tự nào. Tôi khuyên mỗi người mới nên đi theo lộ trình :  Toán, ML cơ bản, Tối ưu hoá, rồi mới sang LLM, RL và mấy cuốn chuyên sâu (distillation, pruning, interpretability). Toán thì cứ lướt lấy big picture trước, quay lại sau cũng chẳng sao. BTW, hãy đọc mỗi bài như một món ăn , ngấu nghiến và nghiền ngẫm, song song với việc take note và check lại các paper tham chiếu. Luôn luôn đặt câu hỏi tại sao nó lại như vậy, và nếu tôi thay đổi nó thì sao ? 
+Mỗi cuốn mở đầu bằng một bài dẫn nhập: cần biết gì trước, nên đọc theo thứ tự nào. Tôi khuyên mỗi người mới nên đi theo lộ trình :  Toán, ML cơ bản, Tối ưu hoá, rồi mới sang LLM, RL và mấy cuốn chuyên sâu (distillation, pruning, interpretability). Cuốn Agent, RAG nên đọc sau cuốn LLM, vì nó giả định đã quen attention, context window và inference. Toán thì cứ lướt lấy big picture trước, quay lại sau cũng chẳng sao. BTW, hãy đọc mỗi bài như một món ăn , ngấu nghiến và nghiền ngẫm, song song với việc take note và check lại các paper tham chiếu. Luôn luôn đặt câu hỏi tại sao nó lại như vậy, và nếu tôi thay đổi nó thì sao ? 
 
 ## LƯU Ý :
 
