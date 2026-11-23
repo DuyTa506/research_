@@ -6,7 +6,7 @@ Hey guys, đây là một số takenote của tôi trong lộ trình học AI, t
 
 Và, nhấn mạnh lại, đây là ghi chú học tập chứ không phải bản dịch. Nếu bạn cần con số hay phát biểu chính xác, hãy mở paper gốc, link nằm ở cuối mỗi bài.
 
-## Mười một cuốn hiện có
+## Mười lăm cuốn hiện có
 
 
 | Cuốn                                                              | Nội dung                                                                                                                                                                    | Số bài | Số trang |
@@ -17,6 +17,10 @@ Và, nhấn mạnh lại, đây là ghi chú học tập chứ không phải b�
 | [Nhập môn LLM](books/nhap_mon/llm.pdf) | Bản nhập môn ngắn (47 trang) cho người mới: token, embedding, attention, cách LLM sinh chữ, từ pretrain đến trợ lý; nhiều hình, toán ở mức trực giác, không bài tập. Đọc trước cuốn LLM bên dưới |
 | [LLM, attention, VLM và inference](books/llm.pdf)                 | Bắt đầu đi sâu hơn vào AI hiện đại : Transformer, các biến thể attention, scaling, tăng tốc suy luận, mô hình thị giác ngôn ngữ                                             | 73     | 636      |
 | [Nhập môn Reinforcement Learning](books/nhap_mon/rl.pdf) | Bản nhập môn ngắn (51 trang): thử và sai, MDP, Q-learning, policy gradient, PPO, RLHF và DPO, GRPO cho lập luận; nhiều hình, toán ở mức trực giác, không bài tập. Đọc trước cuốn RL bên dưới |
+| [Nhập môn Agent và RAG](books/nhap_mon/agentic.pdf) | Bản nhập môn (56 trang): chuỗi suy luận, embedding và RAG, RAG nâng cao, vòng lặp agent và công cụ, bộ nhớ, nhiều agent phối hợp, đánh giá và an toàn; nhiều hình, toán ở mức trực giác, không bài tập. Đọc trước cuốn Agentic bên dưới |
+| [Nhập môn Knowledge Distillation](books/nhap_mon/distillation.pdf) | Bản nhập môn (45 trang): thầy và trò, nhãn mềm và nhiệt độ, chưng cất đặc trưng, khoảng cách năng lực, chưng cất cho LLM và lập luận; nhiều hình, không bài tập. Đọc trước cuốn Distillation bên dưới |
+| [Nhập môn Pruning](books/nhap_mon/pruning.pdf) | Bản nhập môn (46 trang): vì sao mạng cắt được, thưa không có nghĩa là nhanh, độ quan trọng của trọng số, cắt rồi huấn luyện lại, pruning cho LLM, cắt lớp; nhiều hình, không bài tập. Đọc trước cuốn Pruning bên dưới |
+| [Nhập môn Interpretability](books/nhap_mon/interp.pdf) | Bản nhập môn (39 trang): nhìn vào bên trong mô hình, feature và superposition, probing, mạch và induction head, SAE và steering; nhiều hình, không bài tập. Đọc trước cuốn Interp bên dưới |
 | [Reinforcement learning](books/rl.pdf)                            | Từ nền tảng (Bellman, Q-learning, policy gradient) đến deep RL, PPO và các hướng RL cho mô hình ngôn ngữ                                                                    | 57     | 545      |
 | [Knowledge distillation](books/distillation.pdf)                  | Chưng cất tri thức từ ý tưởng gốc đến distillation cho LLM và mô hình thị giác ngôn ngữ                                                                                     | 47     | 343      |
 | [Pruning](books/pruning.pdf)                                      | Cắt tỉa mạng: có cấu trúc và không cấu trúc, khi nào mất chất lượng, phục hồi thế nào                                                                                       | 49     | 396      |
@@ -28,7 +32,7 @@ Ba cuốn Toán, ML/AI cơ bản và Tối ưu hoá nay có lần lượt 14, 8 
 
 ## Nên đọc thế nào
 
-Nếu chưa biết gì về LLM, hãy bắt đầu bằng cuốn "Nhập môn LLM" (bản ngắn, nhiều hình), rồi sang cuốn LLM chi tiết; tương tự, "Nhập môn Reinforcement Learning" đứng trước cuốn RL chi tiết: cuốn đó đi sâu từng paper, nhập môn chỉ dạy trực giác và chỉ đường sang các bài tương ứng.
+Nếu chưa biết gì về LLM, hãy bắt đầu bằng cuốn "Nhập môn LLM" (bản ngắn, nhiều hình), rồi sang cuốn LLM chi tiết; tương tự, mỗi chủ đề (RL, Agent và RAG, Distillation, Pruning, Interpretability) có một cuốn "Nhập môn" đứng trước cuốn chi tiết: cuốn đó đi sâu từng paper, nhập môn chỉ dạy trực giác và chỉ đường sang các bài tương ứng.
 
 Mỗi cuốn mở đầu bằng một bài dẫn nhập: cần biết gì trước, nên đọc theo thứ tự nào. Tôi khuyên mỗi người mới nên đi theo lộ trình :  Toán, ML cơ bản, Tối ưu hoá, rồi mới sang LLM, RL và mấy cuốn chuyên sâu (distillation, pruning, interpretability). Cuốn Agent, RAG nên đọc sau cuốn LLM, vì nó giả định đã quen attention, context window và inference. Toán thì cứ lướt lấy big picture trước, quay lại sau cũng chẳng sao. BTW, hãy đọc mỗi bài như một món ăn , ngấu nghiến và nghiền ngẫm, song song với việc take note và check lại các paper tham chiếu. Luôn luôn đặt câu hỏi tại sao nó lại như vậy, và nếu tôi thay đổi nó thì sao ? 
 
