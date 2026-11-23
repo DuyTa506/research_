@@ -6,7 +6,7 @@ Hey guys, đây là một số takenote của tôi trong lộ trình học AI, t
 
 Và, nhấn mạnh lại, đây là ghi chú học tập chứ không phải bản dịch. Nếu bạn cần con số hay phát biểu chính xác, hãy mở paper gốc, link nằm ở cuối mỗi bài.
 
-## Chín cuốn hiện có
+## Mười cuốn hiện có
 
 
 | Cuốn                                                              | Nội dung                                                                                                                                                                    | Số bài | Số trang |
@@ -14,6 +14,7 @@ Và, nhấn mạnh lại, đây là ghi chú học tập chứ không phải b�
 | [Toán cho AI](books/math.pdf)                                     | Nhắc lại phần toán nên học / đọc để hỗ trợ việc đào sâu hơn vào AI, bạn không cần phải nhớ tất cả, cốt lõi là nắm được big pictures trước khi đi vào sâu hơn .              | 35     | 453      |
 | [ML/AI cơ bản](books/mlbasics.pdf)                                | Từ hồi quy, mạng nơ-ron, CNN, RNN đến GAN, VAE, diffusion và các ý tưởng nền tảng của deep learning                                                                         | 40     | 408      |
 | [Tối ưu hoá, optimizer và hyperparameter](books/optimization.pdf) | Từ lí thuyết tối ưu hóa cho đến các thuật toán tối ưu thường thấy trong các paper AI : SGD, Adam, AdamW đến Muon, learning rate schedule, batch size, normalization, tuning | 51     | 506      |
+| [Nhập môn LLM](books/llmintro.pdf) | Bản nhập môn ngắn (47 trang) cho người mới: token, embedding, attention, cách LLM sinh chữ, từ pretrain đến trợ lý; nhiều hình, toán ở mức trực giác, không bài tập. Đọc trước cuốn LLM bên dưới |
 | [LLM, attention, VLM và inference](books/llm.pdf)                 | Bắt đầu đi sâu hơn vào AI hiện đại : Transformer, các biến thể attention, scaling, tăng tốc suy luận, mô hình thị giác ngôn ngữ                                             | 73     | 636      |
 | [Reinforcement learning](books/rl.pdf)                            | Từ nền tảng (Bellman, Q-learning, policy gradient) đến deep RL, PPO và các hướng RL cho mô hình ngôn ngữ                                                                    | 57     | 545      |
 | [Knowledge distillation](books/distillation.pdf)                  | Chưng cất tri thức từ ý tưởng gốc đến distillation cho LLM và mô hình thị giác ngôn ngữ                                                                                     | 47     | 343      |
@@ -25,6 +26,8 @@ Và, nhấn mạnh lại, đây là ghi chú học tập chứ không phải b�
 Ba cuốn Toán, ML/AI cơ bản và Tối ưu hoá nay có lần lượt 14, 8 và 8 chương nền tảng trước các bài paper. Cuốn Agent, RAG có 7 chương nền trước các bài paper. Các cuốn LLM, RL, Distillation, Pruning và Interp cũng mở đầu bằng 9, 8, 7, 7 và 9 chương nền. Cuốn Interp được mở rộng thêm hai chương nhập môn (interpretability là gì, và bộ công cụ chạy thử trên một mô hình đồ chơi) cùng 26 bài paper arXiv (probing, tuned lens, mạch, steering, SAE, các bài phê phán), để bớt phụ thuộc vào các bài viết trên web. Cột "Số bài" vẫn đếm ghi chú paper. Phần lớn bài paper trong các cuốn này nay có thêm hình minh hoạ tự vẽ (sơ đồ cơ chế, đồ thị vẽ lại từ số liệu trong ghi chú, hoặc mô phỏng đồ chơi), mỗi hình kèm đoạn "Cách đọc hình" và ghi rõ nguồn số.
 
 ## Nên đọc thế nào
+
+Nếu chưa biết gì về LLM, hãy bắt đầu bằng cuốn "Nhập môn LLM" (bản ngắn, nhiều hình), rồi sang cuốn LLM chi tiết: cuốn đó đi sâu từng paper, nhập môn chỉ dạy trực giác và chỉ đường sang các bài tương ứng.
 
 Mỗi cuốn mở đầu bằng một bài dẫn nhập: cần biết gì trước, nên đọc theo thứ tự nào. Tôi khuyên mỗi người mới nên đi theo lộ trình :  Toán, ML cơ bản, Tối ưu hoá, rồi mới sang LLM, RL và mấy cuốn chuyên sâu (distillation, pruning, interpretability). Cuốn Agent, RAG nên đọc sau cuốn LLM, vì nó giả định đã quen attention, context window và inference. Toán thì cứ lướt lấy big picture trước, quay lại sau cũng chẳng sao. BTW, hãy đọc mỗi bài như một món ăn , ngấu nghiến và nghiền ngẫm, song song với việc take note và check lại các paper tham chiếu. Luôn luôn đặt câu hỏi tại sao nó lại như vậy, và nếu tôi thay đổi nó thì sao ? 
 
